@@ -1,0 +1,315 @@
+/* Event Card Component */
+.event-card {
+    @apply bg-white rounded-xl shadow-lg overflow-hidden transition-all duration-500 hover:shadow-2xl border border-gray-100 flex flex-col h-full;
+}
+
+.event-card.group:hover {
+    @apply transform -translate-y-2;
+}
+
+.event-card__image {
+    @apply w-full h-48 object-cover transition-transform duration-500;
+}
+
+.event-card__content {
+    @apply p-6 flex-grow flex flex-col;
+}
+
+.event-card__title {
+    @apply text-lg font-bold text-gray-800 mb-2 truncate transition-colors duration-300;
+}
+
+.event-card__date {
+    @apply text-sm text-gray-600 mb-2 flex items-center;
+}
+
+.event-card__location {
+    @apply text-sm text-gray-600 mb-3 flex items-center;
+}
+
+.event-card__description {
+    @apply text-gray-700 text-sm mb-4 line-clamp-2 flex-grow;
+}
+
+.event-card__price {
+    @apply text-lg font-bold text-green-600 mb-4;
+}
+
+.event-card__footer {
+    @apply flex justify-between items-center pt-4 border-t border-gray-100 mt-auto;
+}
+
+/* Line clamp utility for truncating text */
+.line-clamp-1 {
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+/* Gradient button styles */
+.btn-primary {
+    @apply inline-block text-center font-medium rounded-lg transition-all duration-300 shadow-md;
+}
+
+.btn-primary:hover {
+    @apply shadow-lg transform;
+}
+
+/* Hover effect for images */
+.event-card img {
+    transition: transform 0.5s ease;
+}
+
+.event-card:hover img {
+    transform: scale(1.05);
+}
+
+/* Flex layout for even distribution */
+.event-card-content {
+    @apply flex flex-col h-full;
+}
+
+.event-card-content .event-card__main {
+    @apply flex-grow;
+}
+
+.event-card-content .event-card__footer {
+    @apply mt-auto;
+}
+
+/* User Dashboard Card Component */
+.dashboard-card {
+    @apply bg-white p-6 rounded-xl shadow-md border border-gray-100;
+}
+
+.dashboard-card__header {
+    @apply flex justify-between items-center mb-6;
+}
+
+.dashboard-card__title {
+    @apply text-lg font-semibold text-gray-800;
+}
+
+.dashboard-card__content {
+    @apply space-y-4;
+}
+
+/* Navigation Sidebar Component */
+.sidebar-nav {
+    @apply flex flex-col h-full;
+}
+
+.sidebar-nav__item {
+    @apply flex items-center px-6 py-3 text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors duration-200;
+}
+
+.sidebar-nav__item.active {
+    @apply bg-blue-100 text-blue-700 border-r-2 border-blue-700;
+}
+
+.sidebar-nav__icon {
+    @apply mr-3 w-5 h-5;
+}
+
+/* Booking Card Component */
+.booking-card {
+    @apply bg-white rounded-xl p-6 shadow-md border border-gray-100 mb-4;
+}
+
+.booking-card__header {
+    @apply flex justify-between items-start mb-4;
+}
+
+.booking-card__event {
+    @apply font-bold text-lg text-gray-800;
+}
+
+.booking-card__status {
+    @apply px-3 py-1 rounded-full text-sm font-medium;
+}
+
+.booking-card__details {
+    @apply grid grid-cols-2 gap-4 mb-4 text-sm;
+}
+
+.booking-card__detail-label {
+    @apply text-gray-500;
+}
+
+.booking-card__detail-value {
+    @apply text-gray-800 font-medium;
+}
+
+/* Ticket Type Card Component */
+.ticket-type-card {
+    @apply bg-white rounded-lg p-4 shadow border-l-4 border-blue-500 mb-3;
+}
+
+.ticket-type-card__header {
+    @apply flex justify-between items-center mb-2;
+}
+
+.ticket-type-card__name {
+    @apply font-semibold text-gray-800;
+}
+
+.ticket-type-card__price {
+    @apply text-lg font-bold text-green-600;
+}
+
+.ticket-type-card__description {
+    @apply text-gray-600 text-sm mb-3;
+}
+
+.ticket-type-card__availability {
+    @apply text-sm text-gray-500;
+}
+
+/* User Profile Card Component */
+.profile-card {
+    @apply bg-white rounded-xl shadow-md p-6;
+}
+
+.profile-card__header {
+    @apply flex items-center mb-6;
+}
+
+.profile-card__avatar {
+    @apply w-24 h-24 rounded-full object-cover mr-6;
+}
+
+.profile-card__info h3 {
+    @apply text-xl font-bold text-gray-800;
+}
+
+.profile-card__info p {
+    @apply text-gray-600;
+}
+
+.profile-card__form {
+    @apply space-y-4;
+}
+
+/* Login/Register Form Component */
+.auth-form {
+    @apply bg-white p-8 rounded-xl shadow-lg w-full max-w-md;
+}
+
+.auth-form__title {
+    @apply text-2xl font-bold text-center text-gray-800 mb-6;
+}
+
+.auth-form__subtitle {
+    @apply text-center text-gray-600 mb-8;
+}
+
+.auth-form__input-group {
+    @apply mb-4;
+}
+
+.auth-form__input {
+    @apply w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent;
+}
+
+.auth-form__button {
+    @apply w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-6 rounded-lg transition duration-300;
+}
+
+.auth-form__footer {
+    @apply text-center text-gray-600 mt-6;
+}
+
+.auth-form__link {
+    @apply text-blue-600 hover:text-blue-800 font-medium;
+}
+
+/* Event Details Component */
+.event-detail__hero {
+    @apply bg-gradient-to-r from-blue-500 to-purple-600 text-white py-12;
+}
+
+.event-detail__container {
+    @apply container mx-auto px-4;
+}
+
+.event-detail__content {
+    @apply bg-white rounded-xl shadow-lg overflow-hidden max-w-4xl mx-auto;
+}
+
+.event-detail__image {
+    @apply w-full h-80 object-cover;
+}
+
+.event-detail__info {
+    @apply p-8;
+}
+
+.event-detail__title {
+    @apply text-3xl font-bold text-gray-800 mb-4;
+}
+
+.event-detail__meta {
+    @apply flex items-center text-gray-600 mb-4;
+}
+
+.event-detail__description {
+    @apply text-gray-700 mb-6 leading-relaxed;
+}
+
+.event-detail__tickets {
+    @apply bg-gray-50 p-6 rounded-lg mb-6;
+}
+
+.event-detail__ticket-title {
+    @apply text-xl font-semibold text-gray-800 mb-4;
+}
+
+/* Admin Dashboard Stats Component */
+.stats-card {
+    @apply bg-white p-6 rounded-xl shadow-md;
+}
+
+.stats-card__header {
+    @apply flex items-center mb-4;
+}
+
+.stats-card__icon {
+    @apply w-12 h-12 rounded-full flex items-center justify-center mr-4;
+}
+
+.stats-card__info h3 {
+    @apply text-2xl font-bold text-gray-800;
+}
+
+.stats-card__info p {
+    @apply text-gray-600;
+}
+
+/* Filter/Sort Controls Component */
+.filter-controls {
+    @apply bg-white p-4 rounded-lg shadow-sm mb-6 flex flex-wrap gap-4;
+}
+
+.filter-controls__group {
+    @apply flex-1 min-w-[200px];
+}
+
+.filter-controls__label {
+    @apply block text-sm font-medium text-gray-700 mb-1;
+}
+
+.filter-controls__select {
+    @apply w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500;
+}
+
+.filter-controls__search {
+    @apply flex-1 min-w-[300px];
+}

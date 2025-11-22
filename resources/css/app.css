@@ -1,0 +1,241 @@
+@import 'tailwindcss';
+@import './components/components.css';
+
+@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+@source '../../storage/framework/views/*.php';
+@source '../**/*.blade.php';
+@source '../**/*.js';
+
+@theme {
+    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+        'Segoe UI Symbol', 'Noto Color Emoji';
+}
+
+/* Custom color palette for event ticketing */
+@theme {
+    --color-primary-50: #f0f9ff;
+    --color-primary-100: #e0f2fe;
+    --color-primary-200: #bae6fd;
+    --color-primary-300: #7dd3fc;
+    --color-primary-400: #38bdf8;
+    --color-primary-500: #0ea5e9;
+    --color-primary-600: #0284c7;
+    --color-primary-700: #0369a1;
+    --color-primary-800: #075985;
+    --color-primary-900: #0c4a6e;
+
+    --color-secondary-50: #f5f3ff;
+    --color-secondary-100: #ede9fe;
+    --color-secondary-200: #ddd6fe;
+    --color-secondary-300: #c4b5fd;
+    --color-secondary-400: #a78bfa;
+    --color-secondary-500: #8b5cf6;
+    --color-secondary-600: #7c3aed;
+    --color-secondary-700: #6d28d9;
+    --color-secondary-800: #5b21b6;
+    --color-secondary-900: #4c1d95;
+
+    --color-success-50: #f0fdf4;
+    --color-success-100: #dcfce7;
+    --color-success-200: #bbf7d0;
+    --color-success-300: #86efac;
+    --color-success-400: #4ade80;
+    --color-success-500: #22c55e;
+    --color-success-600: #16a34a;
+    --color-success-700: #15803d;
+    --color-success-800: #166534;
+    --color-success-900: #14532d;
+
+    --color-warning-50: #fffbeb;
+    --color-warning-100: #fef3c7;
+    --color-warning-200: #fde68a;
+    --color-warning-300: #fcd34d;
+    --color-warning-400: #fbbf24;
+    --color-warning-500: #f59e0b;
+    --color-warning-600: #d97706;
+    --color-warning-700: #b45309;
+    --color-warning-800: #92400e;
+    --color-warning-900: #78350f;
+
+    --color-error-50: #fef2f2;
+    --color-error-100: #fee2e2;
+    --color-error-200: #fecaca;
+    --color-error-300: #fca5a5;
+    --color-error-400: #f87171;
+    --color-error-500: #ef4444;
+    --color-error-600: #dc2626;
+    --color-error-700: #b91c1c;
+    --color-error-800: #991b1b;
+    --color-error-900: #7f1d1d;
+}
+
+/* Custom utilities for event ticketing */
+@utility primary-gradient {
+    background: linear-gradient(135deg, rgb(14, 165, 233) 0%, rgb(139, 92, 246) 100%);
+}
+
+@utility card-elevation {
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+@utility card-hover {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    &:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    }
+}
+
+@utility ticket-card {
+    @apply card-elevation border border-gray-200 rounded-xl overflow-hidden;
+}
+
+@utility ticket-card-hover {
+    @apply card-hover;
+}
+
+/* Dashboard layout styles */
+@utility dashboard-container {
+    @apply min-h-screen bg-gray-50;
+}
+
+@utility sidebar {
+    @apply w-64 bg-white shadow-md h-full fixed left-0 top-0 z-10;
+}
+
+@utility main-content {
+    @apply ml-64 flex-1 p-8;
+}
+
+@utility header {
+    @apply bg-white shadow-sm py-4 px-6 flex justify-between items-center;
+}
+
+/* Form elements */
+@utility form-input {
+    @apply w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition;
+}
+
+@utility form-label {
+    @apply block text-sm font-medium text-gray-700 mb-2;
+}
+
+@utility btn-primary {
+    @apply bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-6 rounded-lg transition duration-300 ease-in-out transform hover:scale-105;
+}
+
+@utility btn-secondary {
+    @apply bg-gray-600 hover:bg-gray-700 text-white font-medium py-3 px-6 rounded-lg transition duration-300 ease-in-out;
+}
+
+@utility btn-success {
+    @apply bg-green-600 hover:bg-green-700 text-white font-medium py-3 px-6 rounded-lg transition duration-300 ease-in-out;
+}
+
+@utility btn-danger {
+    @apply bg-red-600 hover:bg-red-700 text-white font-medium py-3 px-6 rounded-lg transition duration-300 ease-in-out;
+}
+
+@utility btn-outline {
+    @apply border border-blue-600 text-blue-600 hover:bg-blue-50 font-medium py-3 px-6 rounded-lg transition duration-300 ease-in-out;
+}
+
+/* Event card styles */
+@utility event-card {
+    @apply bg-white rounded-xl shadow-md overflow-hidden card-elevation;
+}
+
+@utility event-image {
+    @apply w-full h-48 object-cover;
+}
+
+@utility event-content {
+    @apply p-6;
+}
+
+@utility event-title {
+    @apply text-xl font-bold text-gray-800 mb-2;
+}
+
+@utility event-meta {
+    @apply text-gray-600 text-sm mb-3 flex items-center;
+}
+
+@utility event-description {
+    @apply text-gray-700 mb-4;
+}
+
+@utility event-price {
+    @apply text-lg font-bold text-green-600 mb-4;
+}
+
+/* Responsive adjustments */
+@layer utilities {
+    .dashboard-mobile {
+        @apply ml-0;
+    }
+
+    .sidebar-closed {
+        @apply w-0 transform -translate-x-full;
+    }
+
+    .sidebar-open {
+        @apply w-64;
+    }
+}
+
+/* Animation for loading states */
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: .5;
+    }
+}
+
+@utility pulse {
+    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Star rating styles */
+@utility star-rating {
+    @apply flex items-center;
+}
+
+@utility star {
+    @apply text-gray-300 cursor-pointer transition-colors;
+    &:hover {
+        @apply text-yellow-400;
+    }
+}
+
+@utility star.active {
+    @apply text-yellow-400;
+}
+
+/* Booking status badges */
+@utility badge-approved {
+    @apply bg-green-100 text-green-800 px-3 py-1 rounded-full text-xs font-medium;
+}
+
+@utility badge-pending {
+    @apply bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full text-xs font-medium;
+}
+
+@utility badge-rejected {
+    @apply bg-red-100 text-red-800 px-3 py-1 rounded-full text-xs font-medium;
+}
+
+/* Ticket types */
+@utility ticket-standard {
+    @apply border-l-4 border-blue-500;
+}
+
+@utility ticket-premium {
+    @apply border-l-4 border-purple-500;
+}
+
+@utility ticket-vip {
+    @apply border-l-4 border-yellow-500;
+}
