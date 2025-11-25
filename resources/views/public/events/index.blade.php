@@ -63,7 +63,7 @@
                     'location' => 'Jakarta Convention Center',
                     'description' => 'Experience the vibrant culture of Indonesia with this amazing music concert featuring top artists.',
                     'tickets' => collect([[ 'name' => 'Regular', 'price' => 150000 + ($i * 50000) ]]),
-                    'image' => null
+                    'image' => 'https://picsum.photos/400/200?random=' . ($i+1)
                 ]" />
             @endfor
         </div>

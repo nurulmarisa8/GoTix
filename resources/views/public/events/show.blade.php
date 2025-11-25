@@ -32,13 +32,13 @@
             <div class="lg:col-span-2">
                 <!-- Event Hero Image -->
                 <div class="mb-8">
-                    <img src="https://via.placeholder.com/800x400" alt="Event" class="w-full h-80 object-cover rounded-xl">
+                    <img src="https://picsum.photos/800/400?random=1" alt="Event" class="w-full h-80 object-cover rounded-xl">
                 </div>
 
                 <!-- Event Details -->
                 <div class="bg-white p-6 rounded-xl shadow-md mb-8">
                     <h1 class="text-3xl font-bold text-gray-900 mb-4">Musik Jawa Heritage Festival</h1>
-                    
+
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
                         <div class="flex items-center">
                             <svg class="w-5 h-5 mr-2 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -112,32 +112,32 @@
                 <div class="bg-white p-6 rounded-xl shadow-md sticky top-8">
                     <div class="mb-6">
                         <h3 class="text-lg font-semibold mb-4">Ticket Options</h3>
-                        
-                        <div class="ticket-type-card">
-                            <div class="ticket-type-card__header">
-                                <span class="ticket-type-card__name">Regular</span>
-                                <span class="ticket-type-card__price">Rp 150.000</span>
+
+                        <div class="bg-gray-50 p-4 rounded-lg mb-3">
+                            <div class="flex justify-between items-center mb-2">
+                                <span class="font-medium">Regular</span>
+                                <span class="font-bold text-indigo-600">Rp 150.000</span>
                             </div>
-                            <p class="ticket-type-card__description">General admission to the event with standard seating.</p>
-                            <div class="ticket-type-card__availability text-sm text-gray-500">50 tickets available</div>
+                            <p class="text-sm text-gray-600 mb-2">General admission to the event with standard seating.</p>
+                            <div class="text-sm text-gray-500">50 tickets available</div>
                         </div>
-                        
-                        <div class="ticket-type-card ticket-premium">
-                            <div class="ticket-type-card__header">
-                                <span class="ticket-type-card__name">Premium</span>
-                                <span class="ticket-type-card__price">Rp 300.000</span>
+
+                        <div class="bg-gray-100 p-4 rounded-lg mb-3 border border-gray-200">
+                            <div class="flex justify-between items-center mb-2">
+                                <span class="font-medium">Premium</span>
+                                <span class="font-bold text-indigo-600">Rp 300.000</span>
                             </div>
-                            <p class="ticket-type-card__description">VIP seating with exclusive access to premium areas.</p>
-                            <div class="ticket-type-card__availability text-sm text-gray-500">25 tickets available</div>
+                            <p class="text-sm text-gray-600 mb-2">VIP seating with exclusive access to premium areas.</p>
+                            <div class="text-sm text-gray-500">25 tickets available</div>
                         </div>
-                        
-                        <div class="ticket-type-card ticket-vip">
-                            <div class="ticket-type-card__header">
-                                <span class="ticket-type-card__name">VIP</span>
-                                <span class="ticket-type-card__price">Rp 500.000</span>
+
+                        <div class="bg-gradient-to-r from-purple-50 to-indigo-50 p-4 rounded-lg border border-purple-200">
+                            <div class="flex justify-between items-center mb-2">
+                                <span class="font-medium">VIP</span>
+                                <span class="font-bold text-indigo-600">Rp 500.000</span>
                             </div>
-                            <p class="ticket-type-card__description">Best seats with meet and greet with artists.</p>
-                            <div class="ticket-type-card__availability text-sm text-gray-500">10 tickets available</div>
+                            <p class="text-sm text-gray-600 mb-2">Best seats with meet and greet with artists.</p>
+                            <div class="text-sm text-gray-500">10 tickets available</div>
                         </div>
                     </div>
 
@@ -149,30 +149,30 @@
                             <div class="space-y-4">
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-1">Regular Tickets</label>
-                                    <input type="number" min="0" max="10" class="ticket-quantity w-full px-3 py-2 border border-gray-300 rounded-md" data-price="150000">
+                                    <input type="number" min="0" max="10" class="ticket-quantity w-full px-3 py-2 border border-gray-300 rounded-md" data-price="150000" value="0">
                                 </div>
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-1">Premium Tickets</label>
-                                    <input type="number" min="0" max="5" class="ticket-quantity w-full px-3 py-2 border border-gray-300 rounded-md" data-price="300000">
+                                    <input type="number" min="0" max="5" class="ticket-quantity w-full px-3 py-2 border border-gray-300 rounded-md" data-price="300000" value="0">
                                 </div>
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-1">VIP Tickets</label>
-                                    <input type="number" min="0" max="2" class="ticket-quantity w-full px-3 py-2 border border-gray-300 rounded-md" data-price="500000">
+                                    <input type="number" min="0" max="2" class="ticket-quantity w-full px-3 py-2 border border-gray-300 rounded-md" data-price="500000" value="0">
                                 </div>
                             </div>
-                            
+
                             <div class="mt-6 pt-6 border-t border-gray-200">
                                 <div class="flex justify-between items-center mb-4">
                                     <span class="text-gray-700">Total:</span>
-                                    <span class="text-xl font-bold total-amount">Rp 0</span>
+                                    <span class="text-xl font-bold total-amount text-indigo-600">Rp 0</span>
                                 </div>
-                                
+
                                 @auth
-                                    <button type="submit" class="w-full btn-primary py-3" data-loading>
+                                    <button type="submit" class="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white py-3 rounded-lg font-medium transition-all duration-300">
                                         Book Now
                                     </button>
                                 @else
-                                    <a href="{{ route('login') }}" class="w-full btn-primary py-3 inline-block text-center">
+                                    <a href="{{ route('login') }}" class="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white py-3 rounded-lg font-medium transition-all duration-300 inline-block text-center">
                                         Login to Book
                                     </a>
                                 @endauth
@@ -182,5 +182,32 @@
                 </div>
             </div>
         </div>
+
+        <!-- Add JavaScript for ticket calculation -->
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                const ticketInputs = document.querySelectorAll('.ticket-quantity');
+                const totalAmount = document.querySelector('.total-amount');
+
+                function calculateTotal() {
+                    let total = 0;
+                    ticketInputs.forEach(input => {
+                        const price = parseInt(input.getAttribute('data-price')) || 0;
+                        const quantity = parseInt(input.value) || 0;
+                        total += price * quantity;
+                    });
+
+                    totalAmount.textContent = 'Rp ' + total.toLocaleString('id-ID');
+                }
+
+                ticketInputs.forEach(input => {
+                    input.addEventListener('input', calculateTotal);
+                    input.addEventListener('change', calculateTotal);
+                });
+
+                // Initialize total
+                calculateTotal();
+            });
+        </script>
     </div>
 @endsection

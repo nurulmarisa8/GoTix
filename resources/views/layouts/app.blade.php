@@ -22,10 +22,9 @@
                 <div class="flex justify-between h-16">
                     <div class="flex items-center">
                         <div class="flex-shrink-0 flex items-center">
-                            <span class="font-bold text-xl text-blue-600">GoTix</span>
+                            <a href="{{ route('home') }}" class="font-bold text-xl text-blue-600 hover:text-blue-800">GoTix</a>
                         </div>
                         <div class="hidden md:ml-6 md:flex md:space-x-8">
-                            <a href="{{ route('home') }}" class="text-gray-500 hover:text-gray-700 px-3 py-2 rounded-md text-sm font-medium">Home</a>
                             <a href="{{ route('events.index') }}" class="text-gray-500 hover:text-gray-700 px-3 py-2 rounded-md text-sm font-medium">Events</a>
                             <a href="{{ route('about') }}" class="text-gray-500 hover:text-gray-700 px-3 py-2 rounded-md text-sm font-medium">About</a>
                         </div>

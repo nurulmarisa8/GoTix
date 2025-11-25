@@ -71,36 +71,36 @@
                     <h2 class="text-3xl font-bold text-gray-900 mb-4">Featured Events</h2>
                     <p class="text-lg text-gray-600 max-w-2xl mx-auto">Discover the most popular and upcoming events that you won't want to miss.</p>
                 </div>
-                
+
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                     @for ($i = 0; $i < 6; $i++)
                         <div class="event-card">
-                            <img src="https://via.placeholder.com/400x200" alt="Event" class="event-card__image">
-                            <div class="event-card__content">
-                                <h3 class="event-card__title">Musik Jawa Heritage Festival</h3>
+                            <img src="https://picsum.photos/400/200?random={{ $i+1 }}" alt="Event" class="event-card__image w-full h-48 object-cover">
+                            <div class="event-card__content p-4">
+                                <h3 class="event-card__title text-lg font-bold text-gray-800 mb-2">Musik Jawa Heritage Festival {{ $i+1 }}</h3>
                                 <div class="event-card__date flex items-center mb-2">
                                     <svg class="w-4 h-4 mr-2 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
                                     </svg>
-                                    Nov 25, 2025 19:00
+                                    <span>Nov {{ 25+$i }}, 2025 19:00</span>
                                 </div>
                                 <div class="event-card__location flex items-center mb-3">
                                     <svg class="w-4 h-4 mr-2 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
                                     </svg>
-                                    Jakarta Convention Center
+                                    <span>Jakarta Convention Center</span>
                                 </div>
-                                <p class="event-card__description">Experience the rich cultural heritage of Javanese music with traditional instruments and performances.</p>
-                                <div class="event-card__footer">
-                                    <span class="event-card__price">From Rp 150.000</span>
-                                    <a href="#" class="btn-primary text-sm py-2 px-4">View Details</a>
+                                <p class="event-card__description text-gray-600 text-sm mb-4">Experience the rich cultural heritage of Javanese music with traditional instruments and performances.</p>
+                                <div class="event-card__footer flex justify-between items-center">
+                                    <span class="event-card__price font-semibold text-indigo-600">From Rp {{ 150000 + ($i * 25000) }}</span>
+                                    <a href="{{ route('events.show', $i+1) }}" class="btn-primary text-sm py-2 px-4 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-medium rounded-lg transition-all duration-300">View Details</a>
                                 </div>
                             </div>
                         </div>
                     @endfor
                 </div>
-                
+
                 <div class="text-center mt-12">
                     <a href="{{ route('events.index') }}" class="btn-outline">View All Events</a>
                 </div>
@@ -114,7 +114,7 @@
                     <h2 class="text-3xl font-bold text-gray-900 mb-4">How It Works</h2>
                     <p class="text-lg text-gray-600 max-w-2xl mx-auto">Booking your tickets is simple and secure with our platform.</p>
                 </div>
-                
+
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
                     <div class="text-center">
                         <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -148,7 +148,7 @@
                     <h2 class="text-3xl font-bold text-gray-900 mb-4">What Our Users Say</h2>
                     <p class="text-lg text-gray-600 max-w-2xl mx-auto">Hear from our satisfied customers about their experience with GoTix.</p>
                 </div>
-                
+
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                     <div class="bg-white p-6 rounded-xl shadow-md">
                         <div class="flex items-center mb-4">
