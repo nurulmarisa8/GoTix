@@ -1,48 +1,22 @@
 <?php
-// app/Models/Booking.php
 
 namespace App\Models;
-
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class Booking extends Model
-{
-    use HasFactory;
-
-    /**
-     * The attributes that are mass assignable.
-     */
-    protected $fillable = [
-        'user_id',
-        'ticket_id',
-        'quantity',
-        'total_price',
-        'status', // pending, approved, cancelled
-        // Tambahkan kolom lain seperti booking_code, dll.
-    ];
-
-    /**
-     * Mendefinisikan relasi: Booking dimiliki oleh satu User (Registered User).
-     */
-    public function user()
-    {
+class Booking extends Model {
+    protected $fillable = ['user_id', 'ticket_id', 'quantity', 'total_price', 'status', 'cancel_deadline'];
+    protected $casts = ['cancel_deadline' => 'datetime', 'cancelled_at' => 'datetime'];
+    
+    public function user(): BelongsTo {
         return $this->belongsTo(User::class);
     }
-
-    /**
-     * Mendefinisikan relasi: Booking mengacu pada satu jenis Ticket.
-     */
-    public function ticket()
-    {
+    
+    public function ticket(): BelongsTo {
         return $this->belongsTo(Ticket::class);
     }
     
-    /**
-     * Relasi pintas: Mendapatkan Event melalui Ticket
-     */
-    public function event()
-    {
-        return $this->hasOneThrough(Event::class, Ticket::class);
+    public function canBeCancelled(): bool {
+        return $this->status === 'approved' && now()->lessThan($this->cancel_deadline);
     }
 }

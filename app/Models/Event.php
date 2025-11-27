@@ -1,49 +1,36 @@
 <?php
-// app/Models/Event.php
 
 namespace App\Models;
-
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
-class Event extends Model
-{
-    use HasFactory;
-
-    /**
-     * The attributes that are mass assignable.
-     */
-    protected $fillable = [
-        'organizer_id',
-        'nama_acara',
-        'deskripsi',
-        'tanggal_waktu',
-        'lokasi',
-        'gambar_acara',
-        // Tambahkan kolom lain sesuai kebutuhan migrasi
-    ];
-
-    /**
-     * Mendefinisikan relasi: Event dimiliki oleh satu Organizer (User).
-     */
-    public function organizer()
-    {
-        return $this->belongsTo(User::class, 'organizer_id');
+class Event extends Model {
+    protected $fillable = ['user_id', 'name', 'description', 'event_date', 'location', 'image_url', 'status'];
+    protected $casts = ['event_date' => 'datetime'];
+    
+    public function organizer(): BelongsTo {
+        return $this->belongsTo(User::class, 'user_id');
     }
-
-    /**
-     * Mendefinisikan relasi: Satu Event dapat memiliki banyak jenis Ticket.
-     */
-    public function tickets()
-    {
+    
+    public function tickets(): HasMany {
         return $this->hasMany(Ticket::class);
     }
     
-    /**
-     * Mendefinisikan relasi: Satu Event dapat memiliki banyak FavoriteEvent.
-     */
-    public function favorites()
-    {
-        return $this->hasMany(FavoriteEvent::class);
+    public function bookings(): HasMany {
+        return $this->hasMany(Booking::class, 'ticket_id', 'id');
+    }
+    
+    public function favoritedBy(): BelongsToMany {
+        return $this->belongsToMany(User::class, 'favorites');
+    }
+    
+    public function reviews(): HasMany {
+        return $this->hasMany(Review::class);
+    }
+    
+    public function getAverageRating() {
+        return $this->reviews()->avg('rating') ?? 0;
     }
 }

@@ -1,58 +1,28 @@
 <?php
-// app/Models/User.php
 
 namespace App\Models;
-
-use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
-class User extends Authenticatable
-{
-    use HasFactory, Notifiable;
-
-    /**
-     * The attributes that are mass assignable.
-     * Termasuk 'role' dan 'status_approval' untuk Organizer.
-     */
-    protected $fillable = [
-        'name',
-        'email',
-        'password',
-        'role', // admin, organizer, registered_user
-        'status_approval', // pending, approved, rejected (khusus organizer)
-    ];
-
-    /**
-     * The attributes that should be hidden for serialization.
-     */
-    protected $hidden = [
-        'password',
-        'remember_token',
-    ];
-
-    /**
-     * Mendefinisikan relasi: Seorang User (sebagai Organizer) dapat memiliki banyak Event.
-     */
-    public function events()
-    {
-        return $this->hasMany(Event::class, 'organizer_id');
+class User extends Authenticatable {
+    protected $fillable = ['name', 'email', 'password', 'role', 'organizer_status'];
+    protected $hidden = ['password', 'remember_token'];
+    protected $casts = ['email_verified_at' => 'datetime'];
+    
+    public function events(): HasMany {
+        return $this->hasMany(Event::class);
     }
-
-    /**
-     * Mendefinisikan relasi: Seorang User (sebagai Registered User) dapat memiliki banyak Booking.
-     */
-    public function bookings()
-    {
+    
+    public function bookings(): HasMany {
         return $this->hasMany(Booking::class);
     }
-
-    /**
-     * Mendefinisikan relasi: Seorang User (sebagai Registered User) dapat memiliki banyak FavoriteEvent.
-     */
-    public function favorites()
-    {
-        return $this->hasMany(FavoriteEvent::class);
+    
+    public function favorites(): BelongsToMany {
+        return $this->belongsToMany(Event::class, 'favorites');
+    }
+    
+    public function reviews(): HasMany {
+        return $this->hasMany(Review::class);
     }
 }

@@ -1,39 +1,22 @@
 <?php
-// app/Models/Ticket.php
 
 namespace App\Models;
-
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class Ticket extends Model
-{
-    use HasFactory;
-
-    /**
-     * The attributes that are mass assignable.
-     */
-    protected $fillable = [
-        'event_id',
-        'nama_tiket',
-        'deskripsi_tiket',
-        'harga_tiket',
-        'kuota', // Kuota tiket
-    ];
-
-    /**
-     * Mendefinisikan relasi: Ticket adalah milik satu Event.
-     */
-    public function event()
-    {
+class Ticket extends Model {
+    protected $fillable = ['event_id', 'ticket_name', 'ticket_description', 'price', 'quota', 'available_quota', 'image_url'];
+    
+    public function event(): BelongsTo {
         return $this->belongsTo(Event::class);
     }
-
-    /**
-     * Mendefinisikan relasi: Satu jenis Ticket dapat memiliki banyak Booking.
-     */
-    public function bookings()
-    {
+    
+    public function bookings(): HasMany {
         return $this->hasMany(Booking::class);
+    }
+    
+    public function getTotalSold() {
+        return $this->quota - $this->available_quota;
     }
 }

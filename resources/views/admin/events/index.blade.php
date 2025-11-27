@@ -1,127 +1,74 @@
-<x-admin-layout>
-    @section('header-title', 'Manage Events')
+@extends('layouts.app')
 
-    <!-- Notification Container -->
-    <div class="notification-container"></div>
-
-    <div class="mb-6">
-        <a href="{{ route('admin.events.create') }}" class="btn-primary">
-            <svg class="w-5 h-5 mr-2 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
-            </svg>
-            Create New Event
+@section('content')
+<div class="container mx-auto px-4 py-8">
+    <div class="flex justify-between items-center mb-6">
+        <h1 class="text-3xl font-bold text-gray-800">Manage Events</h1>
+        <a href="{{ route('admin.events.create') }}" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+            Create Event
         </a>
     </div>
 
-    <!-- Search and Filter Controls -->
-    <div class="filter-controls mb-6">
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-            <div class="filter-controls__group">
-                <label class="filter-controls__label">Search Events</label>
-                <div class="relative">
-                    <input type="text" placeholder="Search by name..." class="filter-controls__select pl-10" id="events-search">
-                    <div class="absolute left-3 top-2.5 text-gray-400">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-                        </svg>
-                    </div>
-                </div>
-            </div>
-            <div class="filter-controls__group">
-                <label class="filter-controls__label">Sort By</label>
-                <select class="filter-controls__select">
-                    <option value="">Default</option>
-                    <option value="name">Name</option>
-                    <option value="date">Date</option>
-                    <option value="organizer">Organizer</option>
-                </select>
-            </div>
-            <div class="filter-controls__group">
-                <label class="filter-controls__label">Organizer</label>
-                <select class="filter-controls__select">
-                    <option value="">All Organizers</option>
-                    <option value="1">Organizer 1</option>
-                    <option value="2">Organizer 2</option>
-                </select>
-            </div>
-            <div class="filter-controls__group">
-                <label class="filter-controls__label">Status</label>
-                <select class="filter-controls__select">
-                    <option value="">All Status</option>
-                    <option value="active">Active</option>
-                    <option value="inactive">Inactive</option>
-                </select>
-            </div>
+    @if(session('success'))
+        <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
+            {{ session('success') }}
         </div>
-    </div>
+    @endif
 
-    <!-- Events Table -->
-    <div class="bg-white rounded-xl shadow-md overflow-hidden">
-        <table class="min-w-full divide-y divide-gray-200" data-sortable id="events-table">
+    <div class="bg-white rounded-lg shadow-md overflow-hidden">
+        <table class="min-w-full divide-y divide-gray-200">
             <thead class="bg-gray-50">
                 <tr>
-                    <th data-sort class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
-                    <th data-sort class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Event Name</th>
-                    <th data-sort class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Organizer</th>
-                    <th data-sort class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tickets Sold</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Organizer</th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Location</th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                    <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
                 </tr>
             </thead>
             <tbody class="bg-white divide-y divide-gray-200">
-                @for ($i = 0; $i < 10; $i++)
-                    <tr>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">#{{ $i+1 }}</td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="text-sm font-medium text-gray-900">Musik Jawa Heritage Festival {{ $i+1 }}</div>
-                            <div class="text-sm text-gray-500">Jakarta Convention Center</div>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Organizer {{ $i+1 }}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Nov {{ 20 + $i }}, 2025</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                            <div class="flex items-center">
-                                <span class="mr-2">{{ rand(50, 200) }}</span>
-                                <div class="w-16 bg-gray-200 rounded-full h-2">
-                                    <div class="bg-blue-600 h-2 rounded-full" style="width: {{ rand(20, 90) }}%"></div>
-                                </div>
-                            </div>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                            <a href="{{ route('admin.events.edit', $i+1) }}" class="text-blue-600 hover:text-blue-900 mr-3">Edit</a>
-                            <a href="{{ route('admin.events.show', $i+1) }}" class="text-green-600 hover:text-green-900 mr-3">View</a>
-                            <a href="#" class="text-red-600 hover:text-red-900" onclick="confirmDelete({{ $i+1 }})">Delete</a>
-                        </td>
-                    </tr>
-                @endfor
+                @forelse($events as $event)
+                <tr>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $event->id }}</td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="text-sm font-medium text-gray-900">{{ $event->name }}</div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $event->organizer->name ?? 'N/A' }}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $event->event_date->format('M d, Y H:i') }}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $event->location }}</td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
+                            {{ $event->status === 'active' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }}">
+                            {{ ucfirst($event->status) }}
+                        </span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                        <a href="{{ route('admin.events.show', $event) }}" class="text-blue-600 hover:text-blue-900 mr-2">View</a>
+                        <a href="{{ route('admin.events.edit', $event) }}" class="text-indigo-600 hover:text-indigo-900 mr-2">Edit</a>
+                        <form action="{{ route('admin.events.destroy', $event) }}" method="POST" class="inline-block" 
+                            onsubmit="return confirm('Are you sure you want to delete this event?')">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="text-red-600 hover:text-red-900">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+                @empty
+                <tr>
+                    <td colspan="7" class="px-6 py-4 text-center text-sm text-gray-500">
+                        No events found.
+                    </td>
+                </tr>
+                @endforelse
             </tbody>
         </table>
-    </div>
 
-    <!-- Pagination -->
-    <div class="mt-6 flex items-center justify-between">
-        <div class="text-sm text-gray-700">
-            Showing <span class="font-medium">1</span> to <span class="font-medium">10</span> of <span class="font-medium">42</span> results
+        <!-- Pagination -->
+        <div class="px-6 py-4 bg-gray-50 border-t border-gray-200">
+            {{ $events->links() }}
         </div>
-        <nav class="flex items-center space-x-2">
-            <a href="#" class="px-3 py-2 rounded-md bg-blue-600 text-white">1</a>
-            <a href="#" class="px-3 py-2 rounded-md hover:bg-gray-100">2</a>
-            <a href="#" class="px-3 py-2 rounded-md hover:bg-gray-100">3</a>
-            <span class="px-3 py-2">...</span>
-            <a href="#" class="px-3 py-2 rounded-md hover:bg-gray-100">5</a>
-            <a href="#" class="px-3 py-2 rounded-md hover:bg-gray-100">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-                </svg>
-            </a>
-        </nav>
     </div>
-</x-admin-layout>
-
-<script>
-function confirmDelete(id) {
-    if (confirm('Are you sure you want to delete this event?')) {
-        // In a real implementation, you would make an AJAX request to delete the event
-        window.showNotification('Event deleted successfully', 'success');
-    }
-}
-</script>
+</div>
+@endsection
