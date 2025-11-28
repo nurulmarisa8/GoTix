@@ -23,9 +23,30 @@ class RegistrationTest extends TestCase
             'email' => 'test@example.com',
             'password' => 'password',
             'password_confirmation' => 'password',
+            'role' => 'user',
         ]);
 
         $this->assertAuthenticated();
         $response->assertRedirect(route('dashboard', absolute: false));
+    }
+
+    public function test_organizer_registration_sets_pending_status(): void
+    {
+        $response = $this->post('/register', [
+            'name' => 'Organizer User',
+            'email' => 'organizer@example.com',
+            'password' => 'password',
+            'password_confirmation' => 'password',
+            'role' => 'organizer',
+        ]);
+
+        $this->assertAuthenticated();
+
+        $user = \App\Models\User::where('email', 'organizer@example.com')->first();
+        $this->assertNotNull($user);
+        $this->assertEquals('organizer', $user->role);
+        $this->assertEquals('pending', $user->organizer_status);
+
+        $response->assertRedirect(route('pending'));
     }
 }

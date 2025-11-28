@@ -17,22 +17,26 @@ class AuthController extends Controller {
             'password' => 'required'
         ]);
 
-        if (Auth::attempt($credentials)) {
-            $user = Auth::user();
+        // First, check if the credentials are valid
+        if (Auth::validate($credentials)) {
+            $user = User::where('email', $credentials['email'])->first();
 
-            // Check if user is organizer and whether they are approved
+            // Log the user in first
+            Auth::login($user);
+
+            // Then, check the user's role and status
             if ($user->role === 'organizer') {
-                // If organizer status is null (old user) or not approved, redirect to pending
                 if ($user->organizer_status !== 'approved') {
-                    Auth::logout();
+                    // If organizer is pending, redirect to pending page
                     return redirect()->route('pending');
                 }
             }
 
+            // If checks pass, redirect to intended route
             return redirect()->intended(route('dashboard'));
         }
 
-        return back()->withErrors(['email' => 'Invalid credentials']);
+        return back()->withErrors(['email' => 'Email atau password salah.']);
     }
 
     public function showRegister() {
@@ -49,6 +53,13 @@ class AuthController extends Controller {
 
         $role = $validated['role'];
 
+        // Logging untuk debugging
+        \Log::info('Register attempt:', [
+            'email' => $validated['email'],
+            'role' => $role,
+            'input_role' => $request->input('role')
+        ]);
+
         // Set organizer status to 'pending' if registering as organizer, otherwise null
         $organizerStatus = ($role === 'organizer') ? 'pending' : null;
 
@@ -60,14 +71,25 @@ class AuthController extends Controller {
             'organizer_status' => $organizerStatus
         ]);
 
-        Auth::login($user);
+        // Logging untuk hasil pembuatan user
+        \Log::info('User created:', [
+            'id' => $user->id,
+            'email' => $user->email,
+            'role' => $user->role,
+            'organizer_status' => $user->organizer_status
+        ]);
 
         // Redirect organizer to pending page if they registered as organizer
         if ($role === 'organizer') {
+            // Log the user in first so they can access the pending page
+            Auth::login($user);
+            // Then redirect to pending page
             return redirect()->route('pending');
         }
 
-        return redirect()->route('home');
+        // For 'user' role, log them in and redirect to dashboard
+        Auth::login($user);
+        return redirect()->route('dashboard');
     }
 
     public function logout() {

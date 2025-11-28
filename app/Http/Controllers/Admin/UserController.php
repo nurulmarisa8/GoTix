@@ -15,13 +15,19 @@ class UserController extends Controller {
     }
 
     public function approveOrganizer(User $user) {
-        $user->update(['organizer_status' => 'approved']);
+        $user->update([
+            'role' => 'organizer',
+            'organizer_status' => 'approved'
+        ]);
         return back()->with('success', 'Organizer approved');
     }
 
     public function rejectOrganizer(User $user) {
-        $user->update(['organizer_status' => 'rejected']);
-        return back()->with('success', 'Organizer rejected');
+        $user->update([
+            'role' => 'user',
+            'organizer_status' => 'rejected'
+        ]);
+        return back()->with('success', 'Organizer request rejected');
     }
 
     public function destroy(User $user) {

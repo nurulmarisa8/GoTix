@@ -30,7 +30,14 @@ class ProfileController extends Controller {
         ]);
 
         $user->name = $validated['name'];
-        $user->email = $validated['email'];
+
+        // If the email address changes, reset email verification
+        if ($validated['email'] !== $user->email) {
+            $user->email = $validated['email'];
+            $user->email_verified_at = null;
+        } else {
+            $user->email = $validated['email'];
+        }
         
         if (!empty($validated['password'])) {
             $user->password = Hash::make($validated['password']);
@@ -39,5 +46,25 @@ class ProfileController extends Controller {
         $user->save();
 
         return redirect()->route('profile.show')->with('success', 'Profile updated successfully');
+    }
+
+    public function destroy(Request $request) {
+        $user = auth()->user();
+
+        // Validate password
+        $request->validate([
+            'password' => 'required',
+        ]);
+
+        // Use the 'userDeletion' error bag to match tests
+        if (!\Illuminate\Support\Facades\Hash::check($request->password, $user->password)) {
+            return back()->withErrors(['password' => 'The provided password does not match our records.'], 'userDeletion');
+        }
+
+        // Logout and delete the user
+        \Illuminate\Support\Facades\Auth::logout();
+        $user->delete();
+
+        return redirect()->route('home');
     }
 }
