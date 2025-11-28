@@ -22,7 +22,7 @@ class CheckPendingOrganizer
         if ($user->role !== 'organizer' || $user->organizer_status !== 'pending') {
             // If user is organizer but approved, redirect to dashboard
             if ($user->role === 'organizer' && $user->organizer_status === 'approved') {
-                return redirect()->route('dashboard');
+                return redirect()->route('events.index');
             }
             // If user is organizer but rejected, redirect to home
             if ($user->role === 'organizer' && $user->organizer_status === 'rejected') {

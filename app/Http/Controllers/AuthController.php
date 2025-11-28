@@ -33,7 +33,7 @@ class AuthController extends Controller {
             }
 
             // If checks pass, redirect to intended route
-            return redirect()->intended(route('dashboard'));
+            return redirect()->intended(route('events.index'));
         }
 
         return back()->withErrors(['email' => 'Email atau password salah.']);
@@ -87,9 +87,10 @@ class AuthController extends Controller {
             return redirect()->route('pending');
         }
 
-        // For 'user' role, log them in and redirect to dashboard
+        // For 'user' role, log them in and redirect to events
         Auth::login($user);
-        return redirect()->route('dashboard');
+        return redirect()->route('events.index');
+    }
     }
 
     public function logout() {

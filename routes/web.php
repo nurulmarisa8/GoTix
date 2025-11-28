@@ -34,7 +34,6 @@ Route::get('/events/{event}', [EventController::class, 'show'])->name('events.sh
 
 // User Dashboard & Bookings
 Route::middleware(['auth', 'organizer.pending'])->group(function () {
-    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::post('/bookings/{ticket}', [BookingController::class, 'store'])->name('bookings.store');
     Route::get('/bookings/{booking}', [BookingController::class, 'show'])->name('booking.show');
     Route::get('/bookings', [BookingController::class, 'history'])->name('bookings.history');

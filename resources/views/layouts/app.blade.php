@@ -23,12 +23,12 @@
                     <div class="ml-10 flex items-baseline space-x-4">
                         @auth
                             <a href="{{ route('events.index') }}" class="px-3 py-2 rounded-md text-sm font-medium hover:bg-indigo-700 transition">Events</a>
-                            <a href="{{ route('bookings.history') }}" class="px-3 py-2 rounded-md text-sm font-medium hover:bg-indigo-700 transition">My Bookings</a>
                             @if(auth()->user()->role === 'admin')
-                                <a href="{{ route('admin.dashboard') }}" class="px-3 py-2 rounded-md text-sm font-medium hover:bg-indigo-700 transition">Admin</a>
-                                <a href="{{ route('admin.analytics') }}" class="px-3 py-2 rounded-md text-sm font-medium hover:bg-indigo-700 transition">Analytics</a>
+                                <a href="{{ route('admin.dashboard') }}" class="px-3 py-2 rounded-md text-sm font-medium hover:bg-indigo-700 transition">Admin Dashboard</a>
                             @elseif(auth()->user()->role === 'organizer')
-                                <a href="{{ route('organizer.events.index') }}" class="px-3 py-2 rounded-md text-sm font-medium hover:bg-indigo-700 transition">My Events</a>
+                                <a href="{{ route('organizer.events.index') }}" class="px-3 py-2 rounded-md text-sm font-medium hover:bg-indigo-700 transition">Organizer Dashboard</a>
+                            @else
+                                <a href="{{ route('bookings.history') }}" class="px-3 py-2 rounded-md text-sm font-medium hover:bg-indigo-700 transition">My Bookings</a>
                             @endif
                             <!-- User dropdown -->
                             <div class="relative" x-data="{ open: false }">
@@ -70,12 +70,12 @@
             <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
                 @auth
                     <a href="{{ route('events.index') }}" class="block px-3 py-2 rounded-md text-base font-medium hover:bg-indigo-700">Events</a>
-                    <a href="{{ route('bookings.history') }}" class="block px-3 py-2 rounded-md text-base font-medium hover:bg-indigo-700">My Bookings</a>
                     @if(auth()->user()->role === 'admin')
-                        <a href="{{ route('admin.dashboard') }}" class="block px-3 py-2 rounded-md text-base font-medium hover:bg-indigo-700">Admin</a>
-                        <a href="{{ route('admin.analytics') }}" class="block px-3 py-2 rounded-md text-base font-medium hover:bg-indigo-700">Analytics</a>
+                        <a href="{{ route('admin.dashboard') }}" class="block px-3 py-2 rounded-md text-base font-medium hover:bg-indigo-700">Admin Dashboard</a>
                     @elseif(auth()->user()->role === 'organizer')
-                        <a href="{{ route('organizer.events.index') }}" class="block px-3 py-2 rounded-md text-base font-medium hover:bg-indigo-700">My Events</a>
+                        <a href="{{ route('organizer.events.index') }}" class="block px-3 py-2 rounded-md text-base font-medium hover:bg-indigo-700">Organizer Dashboard</a>
+                    @else
+                        <a href="{{ route('bookings.history') }}" class="block px-3 py-2 rounded-md text-base font-medium hover:bg-indigo-700">My Bookings</a>
                     @endif
                     <!-- Mobile user dropdown -->
                     <button id="mobile-user-dropdown-btn" class="block w-full text-left px-3 py-2 rounded-md text-base font-medium hover:bg-indigo-700">
@@ -152,6 +152,7 @@
                 mobileUserDropdown.classList.toggle('hidden');
             });
         }
+
 
         // Close mobile menu when clicking outside
         document.addEventListener('click', (event) => {

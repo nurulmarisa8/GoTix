@@ -78,7 +78,7 @@ class EventController extends Controller {
             'image_url' => $imagePath
         ]);
 
-        return redirect()->route('dashboard')->with('success', 'Event created successfully');
+        return redirect()->route('organizer.events.index')->with('success', 'Event created successfully');
     }
 
     public function edit(Event $event) {
@@ -112,13 +112,13 @@ class EventController extends Controller {
             'location' => $validated['location'],
         ]);
 
-        return redirect()->route('dashboard')->with('success', 'Event updated successfully');
+        return redirect()->route('organizer.events.index')->with('success', 'Event updated successfully');
     }
 
     public function destroy(Event $event) {
         $this->authorize('delete', $event);
         $event->delete();
-        return redirect()->route('dashboard')->with('success', 'Event deleted successfully');
+        return redirect()->route('organizer.events.index')->with('success', 'Event deleted successfully');
     }
 
     public function createTicket(Event $event) {

@@ -11,9 +11,6 @@ use App\Http\Controllers\Auth\VerifyEmailController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('guest')->group(function () {
-    // Registration is handled by the custom AuthController registered in routes/web.php
-    // so we remove the default RegisteredUserController register routes here to avoid
-    // duplicate route handlers and inconsistent behavior.
 
     Route::get('login', [AuthenticatedSessionController::class, 'create'])
         ->name('login');
