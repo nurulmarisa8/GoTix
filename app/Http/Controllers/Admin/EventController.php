@@ -176,17 +176,4 @@ class EventController extends Controller {
         $bookings = Booking::with('user', 'ticket.event')->paginate(20);
         return view('admin.bookings.index', compact('bookings'));
     }
-
-    public function approveBooking(Booking $booking) {
-        $booking->update(['status' => 'approved']);
-        return back()->with('success', 'Booking approved successfully');
-    }
-
-    public function rejectBooking(Booking $booking) {
-        if ($booking->status === 'pending') {
-            $booking->update(['status' => 'rejected']);
-            $booking->ticket->update(['available_quota' => $booking->ticket->available_quota + $booking->quantity]);
-        }
-        return back()->with('success', 'Booking rejected successfully');
-    }
 }

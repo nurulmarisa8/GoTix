@@ -50,7 +50,7 @@ Route::middleware('auth')->group(function () {
 
 // Organizer Routes
 Route::middleware(['auth', 'role:organizer'])->prefix('organizer')->name('organizer.')->group(function () {
-    Route::get('/events', [EventController::class, 'index'])->name('events.index');
+    Route::get('/events', [EventController::class, 'organizerIndex'])->name('events.index');
     Route::get('/events/create', [EventController::class, 'create'])->name('events.create');
     Route::post('/events', [EventController::class, 'store'])->name('events.store');
     Route::get('/events/{event}/edit', [EventController::class, 'edit'])->name('events.edit');
@@ -80,8 +80,8 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::get('/reports', [AdminEventController::class, 'reports'])->name('reports');
     Route::get('/analytics', [AdminEventController::class, 'analytics'])->name('analytics');
     Route::get('/bookings', [AdminEventController::class, 'allBookings'])->name('bookings.index');
-    Route::post('/bookings/{booking}/approve', [AdminEventController::class, 'approveBooking'])->name('bookings.approve');
-    Route::post('/bookings/{booking}/reject', [AdminEventController::class, 'rejectBooking'])->name('bookings.reject');
+    Route::post('/bookings/{booking}/approve', [BookingController::class, 'approveBooking'])->name('bookings.approve');
+    Route::post('/bookings/{booking}/reject', [BookingController::class, 'rejectBooking'])->name('bookings.reject');
 });
 
 require __DIR__.'/auth.php';

@@ -61,6 +61,20 @@
             </div>
 
             <div>
+                <label for="role" class="block text-sm font-medium text-gray-700">Register as</label>
+                <div class="mt-1">
+                    <select name="role" id="role"
+                            class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+                        <option value="user" {{ old('role') == 'user' ? 'selected' : '' }}>Regular User</option>
+                        <option value="organizer" {{ old('role') == 'organizer' ? 'selected' : '' }}>Event Organizer</option>
+                    </select>
+                    @error('role')
+                        <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                    @enderror
+                </div>
+            </div>
+
+            <div>
                 <button type="submit"
                         class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                     Register

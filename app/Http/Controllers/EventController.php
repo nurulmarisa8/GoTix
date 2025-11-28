@@ -7,15 +7,7 @@ use Illuminate\Http\Request;
 
 class EventController extends Controller {
     public function index(Request $request) {
-        // Check if the user is an organizer to show their events
-        if (auth()->check() && auth()->user()->role === 'organizer') {
-            $events = Event::where('user_id', auth()->id())
-                          ->orderBy('created_at', 'desc')
-                          ->paginate(10);
-            return view('organizer.events.index', compact('events'));
-        }
-
-        // For public/guest view
+        // For public/guest view - or for organizers viewing public events
         $query = Event::where('status', 'active');
 
         if ($request->search) {
@@ -31,6 +23,13 @@ class EventController extends Controller {
 
         $events = $query->paginate(12);
         return view('events.index', compact('events'));
+    }
+
+    public function organizerIndex() {
+        $events = Event::where('user_id', auth()->id())
+                      ->orderBy('created_at', 'desc')
+                      ->paginate(10);
+        return view('organizer.events.index', compact('events'));
     }
 
     public function show(Event $event) {
