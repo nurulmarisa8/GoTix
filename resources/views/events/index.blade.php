@@ -52,7 +52,7 @@
     @forelse($events as $event)
     <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow duration-200 relative flex flex-col">
         @if($event->image_url)
-            <img src="{{ asset('storage/' . $event->image_url) }}"
+            <img src="{{ $event->image_url }}"
                  class="w-full h-48 object-cover"
                  alt="{{ $event->name }}">
         @else

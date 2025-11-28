@@ -10,7 +10,7 @@
                 <h1 class="text-3xl font-bold text-gray-900">My Events</h1>
                 <p class="mt-2 text-gray-600">Manage events you created</p>
             </div>
-            <a href="{{ route('organizer.events.create') }}" 
+            <a href="{{ route('organizer.events.create') }}"
                class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                 + Add Event
             </a>
@@ -50,7 +50,7 @@
                             {{ $event->location }}
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">
-                            <span class="px-2.5 py-0.5 inline-flex text-xs leading-5 font-semibold rounded-full 
+                            <span class="px-2.5 py-0.5 inline-flex text-xs leading-5 font-semibold rounded-full
                                 {{ $event->status === 'active' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }}">
                                 {{ ucfirst($event->status) }}
                             </span>
@@ -60,9 +60,9 @@
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                             <div class="flex space-x-2">
-                                <a href="{{ route('events.show', $event) }}" 
+                                <a href="{{ route('events.show', $event) }}"
                                    class="text-indigo-600 hover:text-indigo-900">View</a>
-                                <a href="{{ route('organizer.events.edit', $event) }}" 
+                                <a href="{{ route('organizer.events.edit', $event) }}"
                                    class="text-blue-600 hover:text-blue-900">Edit</a>
                                 <form action="{{ route('organizer.events.destroy', $event) }}" method="POST" class="inline"
                                       onsubmit="return confirm('Are you sure you want to delete this event?')">

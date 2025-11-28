@@ -4,7 +4,7 @@
 @section('content')
 <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
     <div>
-        <img src="{{ asset('storage/' . $event->image_url) }}" class="w-full h-96 object-cover rounded-xl" alt="{{ $event->name }}">
+        <img src="{{ $event->image_url }}" class="w-full h-96 object-cover rounded-xl" alt="{{ $event->name }}">
     </div>
     <div>
         <h1 class="text-3xl font-bold text-gray-900 mb-2">{{ $event->name }}</h1>

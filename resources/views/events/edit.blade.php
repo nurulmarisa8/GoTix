@@ -56,7 +56,7 @@
             <label for="image" class="block text-gray-700 text-sm font-medium mb-2">Event Image</label>
             @if($event->image_url)
                 <div class="mb-2">
-                    <img src="{{ asset('storage/' . $event->image_url) }}" alt="Current image" class="h-32 w-32 object-cover rounded">
+                    <img src="{{ $event->image_url }}" alt="Current image" class="h-32 w-32 object-cover rounded">
                 </div>
             @endif
             <input type="file" name="image" id="image"
@@ -83,7 +83,7 @@
     <!-- Ticket Management Section -->
     <div class="mt-8 bg-white shadow-md rounded-lg p-6">
         <h2 class="text-xl font-bold mb-4">Manage Tickets</h2>
-        
+
         <div class="mb-6">
             <a href="{{ route('organizer.events.tickets.create', $event) }}"
                class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700">

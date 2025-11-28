@@ -26,7 +26,7 @@
                 <div class="flex flex-col md:flex-row">
                     <div class="md:w-1/3 mb-4 md:mb-0 md:mr-6">
                         @if($event->image_url)
-                            <img src="{{ asset('storage/' . $event->image_url) }}" alt="{{ $event->name }}" class="w-full h-64 object-cover rounded">
+                            <img src="{{ $event->image_url }}" alt="{{ $event->name }}" class="w-full h-64 object-cover rounded">
                         @else
                             <div class="bg-gray-200 border-2 border-dashed rounded-xl w-full h-64 flex items-center justify-center">
                                 No Image
@@ -39,7 +39,7 @@
                             <p class="text-gray-600"><strong>Organizer:</strong> {{ $event->organizer->name ?? 'N/A' }}</p>
                             <p class="text-gray-600"><strong>Date:</strong> {{ $event->event_date->format('M d, Y H:i') }}</p>
                             <p class="text-gray-600"><strong>Location:</strong> {{ $event->location }}</p>
-                            <p class="text-gray-600"><strong>Status:</strong> 
+                            <p class="text-gray-600"><strong>Status:</strong>
                                 <span class="{{ $event->status === 'active' ? 'text-green-600' : 'text-red-600' }}">
                                     {{ ucfirst($event->status) }}
                                 </span>

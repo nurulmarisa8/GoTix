@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 class CheckRole {
     public function handle(Request $request, Closure $next, ...$roles) {
         if (!auth()->check() || !in_array(auth()->user()->role, $roles)) {
-            abort(403, 'Unauthorized');
+            abort(403, 'ADMIN ONLY');
         }
         return $next($request);
     }

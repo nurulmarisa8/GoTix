@@ -39,7 +39,6 @@
                                     </svg>
                                 </button>
                                 <div x-show="open" class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50" style="display: none;">
-                                    <a href="{{ route('dashboard') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Dashboard</a>
                                     <a href="{{ route('profile.show') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Profile</a>
                                     <form action="{{ route('logout') }}" method="POST" class="block">
                                         @csrf
@@ -83,7 +82,6 @@
                         {{ auth()->user()->name }} ▾
                     </button>
                     <div id="mobile-user-dropdown" class="hidden ml-4 space-y-1">
-                        <a href="{{ route('dashboard') }}" class="block px-4 py-2 text-base font-medium hover:bg-indigo-700">Dashboard</a>
                         <a href="{{ route('profile.show') }}" class="block px-4 py-2 text-base font-medium hover:bg-indigo-700">Profile</a>
                         <form action="{{ route('logout') }}" method="POST">
                             @csrf

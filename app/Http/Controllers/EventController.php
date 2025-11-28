@@ -60,10 +60,13 @@ class EventController extends Controller {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'required|string',
-            'event_date' => 'required|date_format:Y-m-d H:i|after:now',
+            'event_date' => 'required|date|after:now',
             'location' => 'required|string|max:255',
             'image' => 'required|image|max:2048'
         ]);
+
+        // Convert the event_date to the required format after validation
+        $eventDate = \Carbon\Carbon::parse($validated['event_date']);
 
         $imagePath = $request->file('image')->store('events', 'public');
 
@@ -71,7 +74,7 @@ class EventController extends Controller {
             'user_id' => auth()->id(),
             'name' => $validated['name'],
             'description' => $validated['description'],
-            'event_date' => $validated['event_date'],
+            'event_date' => $eventDate->format('Y-m-d H:i'),
             'location' => $validated['location'],
             'image_url' => $imagePath
         ]);
@@ -81,12 +84,7 @@ class EventController extends Controller {
 
     public function edit(Event $event) {
         $this->authorize('update', $event);
-        // Check if the event belongs to the current organizer
-        if (auth()->check() && auth()->user()->role === 'organizer' && $event->user_id == auth()->id()) {
-            return view('events.edit', compact('event'));
-        } else {
-            abort(403, 'Unauthorized to edit this event');
-        }
+        return view('events.edit', compact('event'));
     }
 
     public function update(Request $request, Event $event) {
@@ -95,17 +93,26 @@ class EventController extends Controller {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'required|string',
-            'event_date' => 'required|date_format:Y-m-d H:i|after:now',
+            'event_date' => 'required|date|after:now',
             'location' => 'required|string|max:255',
             'image' => 'nullable|image|max:2048'
         ]);
+
+        // Convert the event_date to the required format after validation
+        $eventDate = \Carbon\Carbon::parse($validated['event_date']);
 
         if ($request->hasFile('image')) {
             $imagePath = $request->file('image')->store('events', 'public');
             $event->image_url = $imagePath;
         }
 
-        $event->update($validated);
+        $event->update([
+            'name' => $validated['name'],
+            'description' => $validated['description'],
+            'event_date' => $eventDate->format('Y-m-d H:i'),
+            'location' => $validated['location'],
+        ]);
+
         return redirect()->route('dashboard')->with('success', 'Event updated successfully');
     }
 
