@@ -1,5 +1,7 @@
 <?php
 
+// File: bootstrap/app.php
+
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -10,13 +12,15 @@ return Application::configure(basePath: dirname(__DIR__))
         commands: __DIR__.'/../routes/console.php',
         health: '/up',
     )
-    ->withMiddleware(function (Middleware $middleware): void {
+    ->withMiddleware(function (Middleware $middleware) {
+        
+        // --- TAMBAHKAN BAGIAN INI ---
         $middleware->alias([
-            'role' => \App\Http\Middleware\RoleMiddleware::class,
-            'pending.organizer' => \App\Http\Middleware\CheckPendingOrganizer::class,
-            'organizer.pending' => \App\Http\Middleware\CheckOrganizerPending::class,
+            'role' => \App\Http\Middleware\CheckRole::class,
         ]);
+        // ----------------------------
+        
     })
-    ->withExceptions(function (Exceptions $exceptions): void {
+    ->withExceptions(function (Exceptions $exceptions) {
         //
     })->create();

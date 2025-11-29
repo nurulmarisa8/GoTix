@@ -1,96 +1,98 @@
-@extends('layouts.app')
-
-@section('title', 'User Management - Admin')
+@extends('layouts.dashboard')
 
 @section('content')
-<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-    <div class="mb-6">
-        <h1 class="text-3xl font-bold text-gray-900">User Management</h1>
-        <p class="mt-2 text-gray-600">Manage all users and organizer requests</p>
-    </div>
+<h2 class="text-2xl font-bold mb-6">Manage Users</h2>
 
-    <div class="bg-white shadow-md rounded-lg overflow-hidden">
-        <div class="overflow-x-auto">
-            <table class="min-w-full divide-y divide-gray-200">
-                <thead class="bg-gray-50">
-                    <tr>
-                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
-                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
-                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
-                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Role</th>
-                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Organizer Status</th>
-                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Created</th>
-                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
-                    </tr>
-                </thead>
-                <tbody class="bg-white divide-y divide-gray-200">
-                    @forelse($users as $user)
-                    <tr class="hover:bg-gray-50">
-                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">#{{ $user->id }}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ $user->name }}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $user->email }}</td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <span class="px-2.5 py-0.5 inline-flex text-xs leading-5 font-semibold rounded-full
-                                {{ $user->role === 'admin' ? 'bg-purple-100 text-purple-800' : ($user->role === 'organizer' ? 'bg-blue-100 text-blue-800' : 'bg-gray-100 text-gray-800') }}">
-                                {{ ucfirst($user->role) }}
+<div class="relative overflow-x-auto shadow-md sm:rounded-lg">
+    <table class="w-full text-sm text-left text-slate-300">
+        {{-- Header Tabel --}}
+        <thead class="text-xs text-slate-400 uppercase bg-slate-800">
+            <tr>
+                <th scope="col" class="px-6 py-3">Nama</th>
+                <th scope="col" class="px-6 py-3">Email</th>
+                <th scope="col" class="px-6 py-3">Role</th>
+                <th scope="col" class="px-6 py-3">Status Organizer</th>
+                <th scope="col" class="px-6 py-3 text-center">Action</th>
+            </tr>
+        </thead>
+        
+        {{-- Body Tabel --}}
+        <tbody>
+            @foreach($users as $user)
+            <tr class="bg-slate-900 border-b border-slate-700 hover:bg-slate-800 transition">
+                
+                {{-- Kolom 1: Nama --}}
+                <td class="px-6 py-4 font-medium text-white">
+                    {{ $user->name }}
+                </td>
+
+                {{-- Kolom 2: Email --}}
+                <td class="px-6 py-4">
+                    {{ $user->email }}
+                </td>
+
+                {{-- Kolom 3: Role (Badge) --}}
+                <td class="px-6 py-4">
+                    <span class="px-2 py-1 rounded text-xs font-bold 
+                        {{ $user->role == 'admin' ? 'bg-red-900 text-red-300' : 
+                          ($user->role == 'organizer' ? 'bg-purple-900 text-purple-300' : 'bg-blue-900 text-blue-300') }}">
+                        {{ strtoupper($user->role) }}
+                    </span>
+                </td>
+
+                {{-- Kolom 4: Status Organizer --}}
+                <td class="px-6 py-4">
+                    @if($user->role == 'organizer')
+                        @if($user->organizer_status == 'pending')
+                            <span class="text-yellow-400 font-bold flex items-center gap-1">
+                                <span class="w-2 h-2 bg-yellow-400 rounded-full animate-pulse"></span> Pending Review
                             </span>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            @if($user->role === 'organizer')
-                                <span class="px-2.5 py-0.5 inline-flex text-xs leading-5 font-semibold rounded-full
-                                    {{ $user->organizer_status === 'approved' ? 'bg-green-100 text-green-800' : ($user->organizer_status === 'rejected' ? 'bg-red-100 text-red-800' : 'bg-yellow-100 text-yellow-800') }}">
-                                    {{ ucfirst($user->organizer_status) }}
-                                </span>
-                                @if($user->organizer_status === 'pending')
-                                <div class="mt-2 flex space-x-2">
-                                    <form action="{{ route('admin.users.approve', $user) }}" method="POST" class="inline">
-                                        @csrf
-                                        <button type="submit" class="text-green-600 hover:text-green-900 font-medium text-sm">
-                                            Approve
-                                        </button>
-                                    </form>
-                                    <form action="{{ route('admin.users.reject', $user) }}" method="POST" class="inline">
-                                        @csrf
-                                        <button type="submit" class="text-red-600 hover:text-red-900 font-medium text-sm">
-                                            Reject
-                                        </button>
-                                    </form>
-                                </div>
-                                @endif
-                            @else
-                                <span class="text-gray-500">-</span>
-                            @endif
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $user->created_at->format('d M Y H:i') }}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm">
-                            @if($user->id !== auth()->id())
-                            <form action="{{ route('admin.users.destroy', $user) }}" method="POST" class="inline"
-                                  onsubmit="return confirm('Are you sure you want to delete this user?')">
+                        @elseif($user->organizer_status == 'approved')
+                            <span class="text-green-400 font-medium">Active</span>
+                        @elseif($user->organizer_status == 'rejected')
+                            <span class="text-red-400 font-medium">Rejected</span>
+                        @endif
+                    @else
+                        <span class="text-slate-600">-</span>
+                    @endif
+                </td>
+
+                {{-- Kolom 5: Action (Tombol ACC/Reject) --}}
+                <td class="px-6 py-4 text-center">
+                    @if($user->role == 'organizer' && $user->organizer_status == 'pending')
+                        <div class="flex items-center justify-center gap-2">
+                            {{-- Tombol Approve --}}
+                            <form action="{{ route('admin.approve', $user->id) }}" method="POST">
                                 @csrf
-                                @method('DELETE')
-                                <button type="submit" class="text-red-600 hover:text-red-900 font-medium">
-                                    Delete
+                                <input type="hidden" name="status" value="approved">
+                                <button type="submit" class="bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded text-xs font-bold transition shadow-lg hover:shadow-green-500/50">
+                                    ✓ ACC
                                 </button>
                             </form>
-                            @else
-                                <span class="text-gray-500">-</span>
-                            @endif
-                        </td>
-                    </tr>
-                    @empty
-                    <tr>
-                        <td colspan="7" class="px-6 py-4 text-center text-gray-500">
-                            No users found
-                        </td>
-                    </tr>
-                    @endforelse
-                </tbody>
-            </table>
-        </div>
 
-        <div class="bg-white px-4 py-3 border-t border-gray-200 sm:px-6">
-            {{ $users->links() }}
-        </div>
-    </div>
+                            {{-- Tombol Reject --}}
+                            <form action="{{ route('admin.approve', $user->id) }}" method="POST">
+                                @csrf
+                                <input type="hidden" name="status" value="rejected">
+                                <button type="submit" class="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded text-xs font-bold transition shadow-lg hover:shadow-red-500/50">
+                                    ✕ Tolak
+                                </button>
+                            </form>
+                        </div>
+                    @elseif($user->role == 'organizer' && $user->organizer_status == 'approved')
+                        <span class="text-green-500 text-xs font-bold border border-green-500/30 px-2 py-1 rounded">
+                            Verified
+                        </span>
+                    @elseif($user->role == 'organizer' && $user->organizer_status == 'rejected')
+                        <span class="text-red-500 text-xs">Ditolak</span>
+                    @else
+                        <span class="text-slate-600 text-xs">-</span>
+                    @endif
+                </td>
+
+            </tr>
+            @endforeach
+        </tbody>
+    </table>
 </div>
 @endsection

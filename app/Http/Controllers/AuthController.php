@@ -1,100 +1,111 @@
 <?php
 
 namespace App\Http\Controllers;
-use App\Models\User;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Auth;
 
-class AuthController extends Controller {
-    public function showLogin() {
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use App\Models\User;
+
+class AuthController extends Controller
+{
+    // --- Tampilkan Form Login ---
+    public function showLoginForm()
+    {
         return view('auth.login');
     }
 
-    public function login(Request $request) {
+    // --- Proses Login (Dengan Logika Cek Status Organizer) ---
+    public function login(Request $request)
+    {
+        // 1. Validasi Input
         $credentials = $request->validate([
-            'email' => 'required|email',
-            'password' => 'required'
+            'email' => ['required', 'email'],
+            'password' => ['required'],
         ]);
 
-        // First, check if the credentials are valid
-        if (Auth::validate($credentials)) {
-            $user = User::where('email', $credentials['email'])->first();
+        // 2. Coba Login
+        if (Auth::attempt($credentials)) {
+            $request->session()->regenerate();
+            $user = Auth::user();
 
-            // Log the user in first
-            Auth::login($user);
-
-            // Then, check the user's role and status
+            // --- LOGIKA KHUSUS ORGANIZER ---
             if ($user->role === 'organizer') {
-                if ($user->organizer_status !== 'approved') {
-                    // If organizer is pending, redirect to pending page
-                    return redirect()->route('pending');
+                // Jika status Rejected
+                if ($user->organizer_status === 'rejected') {
+                    return redirect()->route('organizer.rejected');
                 }
+                // Jika status Pending -> Lempar ke halaman Peringatan
+                if ($user->organizer_status === 'pending') {
+                    return redirect()->route('organizer.pending');
+                }
+                // Jika Approved -> Masuk Dashboard
+                return redirect()->intended(route('organizer.dashboard'));
             }
-
-            // If checks pass, redirect to intended route
-            return redirect()->intended(route('events.index'));
+            
+            // --- LOGIKA ADMIN ---
+            if ($user->role === 'admin') {
+                return redirect()->intended(route('admin.dashboard'));
+            } 
+            
+            // --- LOGIKA USER BIASA ---
+            return redirect()->intended(route('home'));
         }
 
-        return back()->withErrors(['email' => 'Email atau password salah.']);
+        // 3. Jika Gagal Login
+        return back()->withErrors([
+            'email' => 'Email atau password salah.',
+        ])->onlyInput('email');
     }
 
-    public function showRegister() {
+    // --- Tampilkan Form Register ---
+    public function showRegistrationForm()
+    {
         return view('auth.register');
     }
 
-    public function register(Request $request) {
-        $validated = $request->validate([
+    // --- Proses Register (Set Status Pending & Auto Login) ---
+    public function register(Request $request)
+    {
+        $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users',
-            'password' => 'required|min:8|confirmed',
-            'role' => 'required|in:user,organizer'
+            'email' => 'required|string|email|max:255|unique:users',
+            'password' => 'required|string|min:8|confirmed',
+            'role' => 'required|in:organizer,user', 
         ]);
 
-        $role = $validated['role'];
-
-        // Logging untuk debugging
-        \Log::info('Register attempt:', [
-            'email' => $validated['email'],
-            'role' => $role,
-            'input_role' => $request->input('role')
-        ]);
-
-        // Set organizer status to 'pending' if registering as organizer, otherwise null
-        $organizerStatus = ($role === 'organizer') ? 'pending' : null;
-
-        $user = User::create([
-            'name' => $validated['name'],
-            'email' => $validated['email'],
-            'password' => Hash::make($validated['password']),
-            'role' => $role,
-            'organizer_status' => $organizerStatus
-        ]);
-
-        // Logging untuk hasil pembuatan user
-        \Log::info('User created:', [
-            'id' => $user->id,
-            'email' => $user->email,
-            'role' => $user->role,
-            'organizer_status' => $user->organizer_status
-        ]);
-
-        // Redirect organizer to pending page if they registered as organizer
-        if ($role === 'organizer') {
-            // Log the user in first so they can access the pending page
-            Auth::login($user);
-            // Then redirect to pending page
-            return redirect()->route('pending');
+        // Set default status
+        $organizerStatus = null;
+        
+        // KUNCI: Jika dia milih organizer, PAKSA jadi pending
+        if ($request->role === 'organizer') {
+            $organizerStatus = 'pending';
         }
 
-        // For 'user' role, log them in and redirect to events
+        $user = User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+            'role' => $request->role,
+            'organizer_status' => $organizerStatus, // Pastikan variabel ini masuk
+        ]);
+
         Auth::login($user);
-        return redirect()->route('events.index');
-    }
+
+        // Redirect paksa ke pending page jika role organizer
+        if ($user->role === 'organizer') {
+            return redirect()->route('organizer.pending');
+        }
+
+        return redirect()->route('home')->with('success', 'Registrasi berhasil!');
     }
 
-    public function logout() {
+    // --- Logout ---
+    public function logout(Request $request)
+    {
         Auth::logout();
-        return redirect()->route('home');
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+        return redirect('/');
     }
 }

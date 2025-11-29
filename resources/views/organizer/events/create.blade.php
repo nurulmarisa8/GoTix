@@ -1,76 +1,127 @@
-@extends('layouts.app')
-
-@section('title', 'Create Event')
+@extends('layouts.dashboard')
 
 @section('content')
-<div class="max-w-2xl mx-auto px-4 py-8">
-    <h1 class="text-3xl font-bold mb-6">Create New Event</h1>
+<div class="max-w-4xl mx-auto">
+    <div class="flex justify-between items-center mb-6">
+        <h2 class="text-2xl font-bold">Buat Event & Tiket</h2>
+        <a href="{{ route('organizer.events.index') }}" class="text-slate-400 hover:text-white">Batal</a>
+    </div>
 
-    <form action="{{ route('organizer.events.store') }}" method="POST" enctype="multipart/form-data" class="bg-white shadow-md rounded-lg p-6">
+    <form action="{{ route('organizer.events.store') }}" method="POST" enctype="multipart/form-data" class="space-y-6">
         @csrf
-
-        <div class="mb-6">
-            <label for="name" class="block text-gray-700 text-sm font-medium mb-2">Event Name</label>
-            <input type="text" name="name" id="name"
-                   class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent @error('name') border-red-300 @enderror"
-                   value="{{ old('name') }}" required>
-            @error('name')
-                <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
-            @enderror
+        
+        <div class="bg-slate-800 p-6 rounded-xl border border-slate-700">
+            <h3 class="text-lg font-bold text-white mb-4 flex items-center">
+                <span class="bg-purple-600 text-white w-6 h-6 rounded-full flex items-center justify-center text-xs mr-2">1</span>
+                Informasi Acara
+            </h3>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <label class="block mb-2 text-sm font-medium text-slate-300">Nama Acara</label>
+                    <input type="text" name="name" class="bg-slate-900 border border-slate-600 text-white text-sm rounded-lg block w-full p-2.5" placeholder="Contoh: Jazz Night" required>
+                </div>
+                <div>
+                    <label class="block mb-2 text-sm font-medium text-slate-300">Kategori</label>
+                    <select name="category" class="bg-slate-900 border border-slate-600 text-white text-sm rounded-lg block w-full p-2.5">
+                        <option value="Pop">Pop</option>
+                        <option value="Rock">Rock</option>
+                        <option value="Jazz">Jazz</option>
+                        <option value="EDM">EDM</option>
+                        <option value="Indie">Indie</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block mb-2 text-sm font-medium text-slate-300">Tanggal</label>
+                    <input type="date" name="event_date" class="bg-slate-900 border border-slate-600 text-white text-sm rounded-lg block w-full p-2.5" required>
+                </div>
+                <div>
+                    <label class="block mb-2 text-sm font-medium text-slate-300">Waktu Mulai</label>
+                    <input type="time" name="event_time" class="bg-slate-900 border border-slate-600 text-white text-sm rounded-lg block w-full p-2.5" required>
+                </div>
+                <div class="md:col-span-2">
+                    <label class="block mb-2 text-sm font-medium text-slate-300">Lokasi Venue</label>
+                    <input type="text" name="location" class="bg-slate-900 border border-slate-600 text-white text-sm rounded-lg block w-full p-2.5" required>
+                </div>
+                <div class="md:col-span-2">
+                    <label class="block mb-2 text-sm font-medium text-slate-300">Deskripsi</label>
+                    <textarea name="description" rows="3" class="bg-slate-900 border border-slate-600 text-white text-sm rounded-lg block w-full p-2.5"></textarea>
+                </div>
+                <div class="md:col-span-2">
+                    <label class="block mb-2 text-sm font-medium text-slate-300">Poster Acara</label>
+                    <input type="file" name="image" class="block w-full text-sm text-slate-400 file:bg-purple-900 file:text-purple-300 border border-slate-600 rounded-lg cursor-pointer bg-slate-900">
+                </div>
+            </div>
         </div>
 
-        <div class="mb-6">
-            <label for="description" class="block text-gray-700 text-sm font-medium mb-2">Description</label>
-            <textarea name="description" id="description" rows="4"
-                      class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent @error('description') border-red-300 @enderror"
-                      required>{{ old('description') }}</textarea>
-            @error('description')
-                <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
-            @enderror
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-            <div>
-                <label for="event_date" class="block text-gray-700 text-sm font-medium mb-2">Event Date & Time</label>
-                <input type="datetime-local" name="event_date" id="event_date"
-                       class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent @error('event_date') border-red-300 @enderror"
-                       value="{{ old('event_date') }}" required>
-                @error('event_date')
-                    <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
-                @enderror
+        <div class="bg-slate-800 p-6 rounded-xl border border-slate-700">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-bold text-white flex items-center">
+                    <span class="bg-pink-600 text-white w-6 h-6 rounded-full flex items-center justify-center text-xs mr-2">2</span>
+                    Kategori Tiket
+                </h3>
+                <button type="button" onclick="addTicketRow()" class="text-xs bg-slate-700 hover:bg-slate-600 text-white px-3 py-1.5 rounded-lg border border-slate-600">
+                    + Tambah Varian Tiket
+                </button>
             </div>
 
-            <div>
-                <label for="location" class="block text-gray-700 text-sm font-medium mb-2">Location</label>
-                <input type="text" name="location" id="location"
-                       class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent @error('location') border-red-300 @enderror"
-                       value="{{ old('location') }}" required>
-                @error('location')
-                    <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
-                @enderror
+            <div id="tickets-container" class="space-y-4">
+                <div class="ticket-row grid grid-cols-1 md:grid-cols-7 gap-4 p-4 bg-slate-900/50 rounded-lg border border-slate-600/50">
+                    <div class="md:col-span-2">
+                        <label class="text-xs text-slate-400 mb-1 block">Nama Tiket</label>
+                        <input type="text" name="tickets[0][name]" class="bg-slate-800 border border-slate-600 text-white text-sm rounded px-2 py-1.5 w-full" placeholder="VIP / Reguler" required>
+                    </div>
+                    <div class="md:col-span-2">
+                        <label class="text-xs text-slate-400 mb-1 block">Harga (Rp)</label>
+                        <input type="number" name="tickets[0][price]" class="bg-slate-800 border border-slate-600 text-white text-sm rounded px-2 py-1.5 w-full" placeholder="100000" required>
+                    </div>
+                    <div class="md:col-span-1">
+                        <label class="text-xs text-slate-400 mb-1 block">Kuota</label>
+                        <input type="number" name="tickets[0][quota]" class="bg-slate-800 border border-slate-600 text-white text-sm rounded px-2 py-1.5 w-full" placeholder="50" required>
+                    </div>
+                    <div class="md:col-span-2">
+                        <label class="text-xs text-slate-400 mb-1 block">Deskripsi (Opsional)</label>
+                        <input type="text" name="tickets[0][description]" class="bg-slate-800 border border-slate-600 text-white text-sm rounded px-2 py-1.5 w-full" placeholder="Benefit...">
+                    </div>
+                </div>
             </div>
         </div>
 
-        <div class="mb-6">
-            <label for="image" class="block text-gray-700 text-sm font-medium mb-2">Event Image</label>
-            <input type="file" name="image" id="image"
-                   class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent @error('image') border-red-300 @enderror"
-                   accept="image/*" required>
-            @error('image')
-                <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
-            @enderror
-        </div>
-
-        <div class="flex items-center justify-between">
-            <a href="{{ route('organizer.events.index') }}"
-               class="inline-block align-baseline font-medium text-sm text-indigo-600 hover:text-indigo-800">
-                Cancel
-            </a>
-            <button type="submit"
-                    class="bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 px-6 rounded-md transition duration-300">
-                Create Event
-            </button>
-        </div>
+        <button type="submit" class="w-full text-white bg-gradient-to-r from-purple-600 to-pink-600 hover:bg-gradient-to-l focus:ring-4 focus:outline-none focus:ring-purple-800 font-bold rounded-lg text-sm px-5 py-3 text-center">
+            🚀 Simpan Event & Semua Tiket
+        </button>
     </form>
 </div>
+
+<script>
+    let ticketIndex = 1;
+
+    function addTicketRow() {
+        const container = document.getElementById('tickets-container');
+        
+        // HTML Template Baris Baru
+        const newRow = `
+        <div class="ticket-row grid grid-cols-1 md:grid-cols-7 gap-4 p-4 bg-slate-900/50 rounded-lg border border-slate-600/50 mt-4 relative group">
+            <button type="button" onclick="this.parentElement.remove()" class="absolute -top-2 -right-2 bg-red-600 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs hover:bg-red-700">×</button>
+            
+            <div class="md:col-span-2">
+                <input type="text" name="tickets[${ticketIndex}][name]" class="bg-slate-800 border border-slate-600 text-white text-sm rounded px-2 py-1.5 w-full" placeholder="Nama Tiket (Misal: Presale)" required>
+            </div>
+            <div class="md:col-span-2">
+                <input type="number" name="tickets[${ticketIndex}][price]" class="bg-slate-800 border border-slate-600 text-white text-sm rounded px-2 py-1.5 w-full" placeholder="Harga" required>
+            </div>
+            <div class="md:col-span-1">
+                <input type="number" name="tickets[${ticketIndex}][quota]" class="bg-slate-800 border border-slate-600 text-white text-sm rounded px-2 py-1.5 w-full" placeholder="Qty" required>
+            </div>
+            <div class="md:col-span-2">
+                <input type="text" name="tickets[${ticketIndex}][description]" class="bg-slate-800 border border-slate-600 text-white text-sm rounded px-2 py-1.5 w-full" placeholder="Deskripsi">
+            </div>
+        </div>
+        `;
+
+        // Tambahkan ke container (sebelum akhir div)
+        container.insertAdjacentHTML('beforeend', newRow);
+        ticketIndex++;
+    }
+</script>
 @endsection

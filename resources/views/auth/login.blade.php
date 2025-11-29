@@ -1,59 +1,38 @@
-@extends('layouts.app')
-@section('title', 'Login')
+@extends('layouts.main')
 
 @section('content')
-<div class="flex items-center justify-center min-h-96 py-12">
-    <div class="w-full max-w-md bg-white rounded-xl shadow-md border border-gray-200 p-8">
-        <div class="text-center mb-8">
-            <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-indigo-100">
-                <span class="text-2xl">🎫</span>
-            </div>
-            <h1 class="mt-4 text-2xl font-bold text-gray-900">Login to your account</h1>
-        </div>
+<div class="flex items-center justify-center min-h-[80vh]">
+    <div class="w-full max-w-md bg-slate-800 rounded-2xl shadow-2xl p-8 border border-slate-700">
+        <h2 class="text-3xl font-bold text-center text-white mb-8">Login GoTix</h2>
 
-        <form action="{{ route('login') }}" method="POST" class="space-y-6">
+        @if(session('success'))
+            <div class="bg-green-600/20 text-green-400 p-3 rounded mb-4 text-sm text-center">
+                {{ session('success') }}
+            </div>
+        @endif
+
+        <form method="POST" action="{{ route('login') }}">
             @csrf
-
-            <div>
-                <label for="email" class="block text-sm font-medium text-gray-700">Email Address</label>
-                <div class="mt-1">
-                    <input type="email" name="email" id="email"
-                           class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 @error('email') border-red-300 @enderror"
-                           value="{{ old('email') }}" required>
-                    @error('email')
-                        <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
-                    @enderror
-                </div>
+            
+            <div class="mb-5">
+                <label for="email" class="block mb-2 text-sm font-medium text-slate-300">Email Address</label>
+                <input type="email" name="email" id="email" class="bg-slate-900 border border-slate-600 text-white text-sm rounded-lg focus:ring-purple-500 focus:border-purple-500 block w-full p-2.5" placeholder="name@company.com" required>
+                @error('email') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
             </div>
 
-            <div>
-                <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
-                <div class="mt-1">
-                    <input type="password" name="password" id="password"
-                           class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 @error('password') border-red-300 @enderror"
-                           required>
-                    @error('password')
-                        <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
-                    @enderror
-                </div>
+            <div class="mb-5">
+                <label for="password" class="block mb-2 text-sm font-medium text-slate-300">Password</label>
+                <input type="password" name="password" id="password" class="bg-slate-900 border border-slate-600 text-white text-sm rounded-lg focus:ring-purple-500 focus:border-purple-500 block w-full p-2.5" required>
             </div>
 
-            <div>
-                <button type="submit"
-                        class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                    Login
-                </button>
+            <button type="submit" class="w-full text-white bg-gradient-to-r from-purple-600 to-pink-600 hover:bg-gradient-to-l focus:ring-4 focus:outline-none focus:ring-purple-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mb-4">
+                Masuk Sekarang
+            </button>
+            
+            <div class="text-center text-sm text-slate-400">
+                Belum punya akun? <a href="{{ route('register') }}" class="text-purple-400 hover:underline">Daftar disini</a>
             </div>
         </form>
-
-        <div class="mt-6 text-center">
-            <p class="text-sm text-gray-600">
-                Don't have an account?
-                <a href="{{ route('register') }}" class="font-medium text-indigo-600 hover:text-indigo-500">
-                    Register here
-                </a>
-            </p>
-        </div>
     </div>
 </div>
 @endsection

@@ -1,95 +1,49 @@
-@extends('layouts.app')
-@section('title', 'Register')
+@extends('layouts.main')
 
 @section('content')
-<div class="flex items-center justify-center min-h-96 py-12">
-    <div class="w-full max-w-md bg-white rounded-xl shadow-md border border-gray-200 p-8">
-        <div class="text-center mb-8">
-            <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-indigo-100">
-                <span class="text-2xl">🎫</span>
-            </div>
-            <h1 class="mt-4 text-2xl font-bold text-gray-900">Create your account</h1>
-            <p class="mt-2 text-sm text-gray-600">Fill in your details to get started</p>
-        </div>
+<div class="flex items-center justify-center min-h-[80vh] py-10">
+    <div class="w-full max-w-md bg-slate-800 rounded-2xl shadow-2xl p-8 border border-slate-700">
+        <h2 class="text-3xl font-bold text-center text-white mb-6">Daftar Akun</h2>
 
-        <form action="{{ route('register') }}" method="POST" class="space-y-6">
+        <form method="POST" action="{{ route('register') }}">
             @csrf
-
-            <div>
-                <label for="name" class="block text-sm font-medium text-gray-700">Full Name</label>
-                <div class="mt-1">
-                    <input type="text" name="name" id="name"
-                           class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 @error('name') border-red-300 @enderror"
-                           value="{{ old('name') }}" required>
-                    @error('name')
-                        <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
-                    @enderror
-                </div>
+            
+            <div class="mb-4">
+                <label class="block mb-2 text-sm font-medium text-slate-300">Nama Lengkap</label>
+                <input type="text" name="name" class="bg-slate-900 border border-slate-600 text-white text-sm rounded-lg focus:ring-purple-500 focus:border-purple-500 block w-full p-2.5" required>
             </div>
 
-            <div>
-                <label for="email" class="block text-sm font-medium text-gray-700">Email Address</label>
-                <div class="mt-1">
-                    <input type="email" name="email" id="email"
-                           class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 @error('email') border-red-300 @enderror"
-                           value="{{ old('email') }}" required>
-                    @error('email')
-                        <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
-                    @enderror
-                </div>
+            <div class="mb-4">
+                <label class="block mb-2 text-sm font-medium text-slate-300">Email</label>
+                <input type="email" name="email" class="bg-slate-900 border border-slate-600 text-white text-sm rounded-lg focus:ring-purple-500 focus:border-purple-500 block w-full p-2.5" required>
             </div>
 
-            <div>
-                <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
-                <div class="mt-1">
-                    <input type="password" name="password" id="password"
-                           class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 @error('password') border-red-300 @enderror"
-                           required>
-                    @error('password')
-                        <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
-                    @enderror
-                </div>
+            <div class="mb-4">
+                <label class="block mb-2 text-sm font-medium text-slate-300">Daftar Sebagai</label>
+                <select name="role" class="bg-slate-900 border border-slate-600 text-white text-sm rounded-lg focus:ring-purple-500 focus:border-purple-500 block w-full p-2.5">
+                    <option value="user">Pengunjung (Beli Tiket)</option>
+                    <option value="organizer">Event Organizer (Buat Acara)</option>
+                </select>
             </div>
 
-            <div>
-                <label for="password_confirmation" class="block text-sm font-medium text-gray-700">Confirm Password</label>
-                <div class="mt-1">
-                    <input type="password" name="password_confirmation" id="password_confirmation"
-                           class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-                           required>
-                </div>
+            <div class="mb-4">
+                <label class="block mb-2 text-sm font-medium text-slate-300">Password</label>
+                <input type="password" name="password" class="bg-slate-900 border border-slate-600 text-white text-sm rounded-lg focus:ring-purple-500 focus:border-purple-500 block w-full p-2.5" required>
             </div>
 
-            <div>
-                <label for="role" class="block text-sm font-medium text-gray-700">Register as</label>
-                <div class="mt-1">
-                    <select name="role" id="role"
-                            class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
-                        <option value="user" {{ old('role') == 'user' ? 'selected' : '' }}>Regular User</option>
-                        <option value="organizer" {{ old('role') == 'organizer' ? 'selected' : '' }}>Event Organizer</option>
-                    </select>
-                    @error('role')
-                        <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
-                    @enderror
-                </div>
+            <div class="mb-6">
+                <label class="block mb-2 text-sm font-medium text-slate-300">Konfirmasi Password</label>
+                <input type="password" name="password_confirmation" class="bg-slate-900 border border-slate-600 text-white text-sm rounded-lg focus:ring-purple-500 focus:border-purple-500 block w-full p-2.5" required>
             </div>
 
-            <div>
-                <button type="submit"
-                        class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                    Register
-                </button>
+            <button type="submit" class="w-full text-white bg-purple-600 hover:bg-purple-700 focus:ring-4 focus:outline-none focus:ring-purple-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mb-4">
+                Daftar
+            </button>
+            
+            <div class="text-center text-sm text-slate-400">
+                Sudah punya akun? <a href="{{ route('login') }}" class="text-purple-400 hover:underline">Login disini</a>
             </div>
         </form>
-
-        <div class="mt-6 text-center">
-            <p class="text-sm text-gray-600">
-                Already have an account?
-                <a href="{{ route('login') }}" class="font-medium text-indigo-600 hover:text-indigo-500">
-                    Login here
-                </a>
-            </p>
-        </div>
     </div>
 </div>
 @endsection

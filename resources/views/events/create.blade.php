@@ -1,76 +1,52 @@
-@extends('layouts.app')
-
-@section('title', 'Create Event')
+@extends('layouts.dashboard')
 
 @section('content')
-<div class="max-w-2xl mx-auto px-4 py-8">
-    <h1 class="text-3xl font-bold mb-6">Create New Event</h1>
+<div class="max-w-4xl mx-auto">
+    <div class="flex justify-between items-center mb-6">
+        <h2 class="text-2xl font-bold">Buat Event Baru</h2>
+        <a href="{{ route('organizer.events.index') }}" class="text-slate-400 hover:text-white">Batal</a>
+    </div>
 
-    <form action="{{ route('organizer.events.store') }}" method="POST" enctype="multipart/form-data" class="bg-white shadow-md rounded-lg p-6">
+    <form action="{{ route('organizer.events.store') }}" method="POST" enctype="multipart/form-data" class="bg-slate-800 p-6 rounded-xl border border-slate-700">
         @csrf
-
-        <div class="mb-6">
-            <label for="name" class="block text-gray-700 text-sm font-medium mb-2">Event Name</label>
-            <input type="text" name="name" id="name"
-                   class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent @error('name') border-red-300 @enderror"
-                   value="{{ old('name') }}" required>
-            @error('name')
-                <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
-            @enderror
-        </div>
-
-        <div class="mb-6">
-            <label for="description" class="block text-gray-700 text-sm font-medium mb-2">Description</label>
-            <textarea name="description" id="description" rows="4"
-                      class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent @error('description') border-red-300 @enderror"
-                      required>{{ old('description') }}</textarea>
-            @error('description')
-                <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
-            @enderror
-        </div>
-
+        
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
             <div>
-                <label for="event_date" class="block text-gray-700 text-sm font-medium mb-2">Event Date & Time</label>
-                <input type="datetime-local" name="event_date" id="event_date"
-                       class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent @error('event_date') border-red-300 @enderror"
-                       value="{{ old('event_date') }}" required>
-                @error('event_date')
-                    <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
-                @enderror
+                <label class="block mb-2 text-sm font-medium text-slate-300">Nama Acara</label>
+                <input type="text" name="name" class="bg-slate-900 border border-slate-600 text-white text-sm rounded-lg block w-full p-2.5" required>
             </div>
-
             <div>
-                <label for="location" class="block text-gray-700 text-sm font-medium mb-2">Location</label>
-                <input type="text" name="location" id="location"
-                       class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent @error('location') border-red-300 @enderror"
-                       value="{{ old('location') }}" required>
-                @error('location')
-                    <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
-                @enderror
+                <label class="block mb-2 text-sm font-medium text-slate-300">Kategori</label>
+                <select name="category" class="bg-slate-900 border border-slate-600 text-white text-sm rounded-lg block w-full p-2.5">
+                    <option value="Pop">Pop</option>
+                    <option value="Rock">Rock</option>
+                    <option value="Jazz">Jazz</option>
+                    <option value="EDM">EDM</option>
+                    <option value="Indie">Indie</option>
+                </select>
+            </div>
+            <div>
+                <label class="block mb-2 text-sm font-medium text-slate-300">Tanggal</label>
+                <input type="date" name="event_date" class="bg-slate-900 border border-slate-600 text-white text-sm rounded-lg block w-full p-2.5" required>
+            </div>
+            <div>
+                <label class="block mb-2 text-sm font-medium text-slate-300">Waktu</label>
+                <input type="time" name="event_time" class="bg-slate-900 border border-slate-600 text-white text-sm rounded-lg block w-full p-2.5" required>
+            </div>
+            <div class="md:col-span-2">
+                <label class="block mb-2 text-sm font-medium text-slate-300">Lokasi</label>
+                <input type="text" name="location" class="bg-slate-900 border border-slate-600 text-white text-sm rounded-lg block w-full p-2.5" required>
+            </div>
+            <div class="md:col-span-2">
+                <label class="block mb-2 text-sm font-medium text-slate-300">Deskripsi</label>
+                <textarea name="description" rows="3" class="bg-slate-900 border border-slate-600 text-white text-sm rounded-lg block w-full p-2.5"></textarea>
+            </div>
+            <div class="md:col-span-2">
+                <label class="block mb-2 text-sm font-medium text-slate-300">Poster</label>
+                <input type="file" name="image" class="block w-full text-sm text-slate-400 border border-slate-600 rounded-lg bg-slate-900">
             </div>
         </div>
-
-        <div class="mb-6">
-            <label for="image" class="block text-gray-700 text-sm font-medium mb-2">Event Image</label>
-            <input type="file" name="image" id="image"
-                   class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent @error('image') border-red-300 @enderror"
-                   accept="image/*" required>
-            @error('image')
-                <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
-            @enderror
-        </div>
-
-        <div class="flex items-center justify-between">
-            <a href="{{ route('organizer.events.index') }}"
-               class="inline-block align-baseline font-medium text-sm text-indigo-600 hover:text-indigo-800">
-                Cancel
-            </a>
-            <button type="submit"
-                    class="bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 px-6 rounded-md transition duration-300">
-                Create Event
-            </button>
-        </div>
+        <button type="submit" class="text-white bg-purple-600 hover:bg-purple-700 font-medium rounded-lg text-sm px-5 py-2.5">Simpan Event</button>
     </form>
 </div>
 @endsection

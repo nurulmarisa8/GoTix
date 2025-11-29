@@ -1,70 +1,118 @@
-@extends('layouts.app')
-@section('title', 'Booking History')
+@extends('layouts.dashboard')
 
 @section('content')
-<div class="mb-8">
-    <h1 class="text-3xl font-bold text-gray-900">My Booking History</h1>
-    <p class="text-gray-600 mt-2">Track all your event bookings here</p>
-</div>
 
-<div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
-    <div class="overflow-x-auto">
-        <table class="min-w-full divide-y divide-gray-200">
-            <thead class="bg-gray-50">
-                <tr>
-                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Event</th>
-                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ticket Type</th>
-                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Quantity</th>
-                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total Price</th>
-                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Booking Date</th>
-                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Action</th>
-                </tr>
-            </thead>
-            <tbody class="bg-white divide-y divide-gray-200">
-                @forelse($bookings as $booking)
-                <tr class="hover:bg-gray-50">
-                    <td class="px-6 py-4 whitespace-nowrap">
-                        <div class="text-sm font-medium text-gray-900">{{ $booking->ticket->event->name }}</div>
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap">
-                        <div class="text-sm text-gray-900">{{ $booking->ticket->ticket_name }}</div>
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {{ $booking->quantity }}
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                        Rp {{ number_format($booking->total_price, 0, ',', '.') }}
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap">
-                        <span class="px-2.5 py-0.5 inline-flex text-xs leading-5 font-semibold rounded-full
-                            {{ $booking->status === 'approved' ? 'bg-green-100 text-green-800' : ($booking->status === 'cancelled' ? 'bg-red-100 text-red-800' : 'bg-yellow-100 text-yellow-800') }}">
-                            {{ ucfirst($booking->status) }}
-                        </span>
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {{ $booking->created_at->format('d M Y H:i') }}
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm">
-                        <a href="{{ route('booking.show', $booking) }}"
-                           class="text-indigo-600 hover:text-indigo-800 font-medium">
-                            View Details
-                        </a>
-                    </td>
-                </tr>
-                @empty
-                <tr>
-                    <td colspan="7" class="px-6 py-4 text-center text-gray-500">
-                        No bookings found
-                    </td>
-                </tr>
-                @endforelse
-            </tbody>
-        </table>
+<div class="mb-6 flex justify-between items-end">
+    <div>
+        <h2 class="text-2xl font-bold text-white">Tiket Saya</h2>
+        <p class="text-slate-400">Daftar konser yang akan kamu datangi.</p>
     </div>
+    <a href="{{ route('home') }}" class="text-sm text-purple-400 hover:text-purple-300 font-medium">
+        + Cari Event Lain
+    </a>
 </div>
 
-<div class="mt-6 flex justify-center">
-    {{ $bookings->links() }}
+<div class="grid grid-cols-1 gap-6">
+    @forelse($bookings as $booking)
+    <div class="bg-slate-800 rounded-2xl overflow-hidden border border-slate-700 flex flex-col md:flex-row hover:border-purple-500 transition group shadow-lg">
+        
+        <div class="md:w-48 h-48 md:h-auto relative flex-shrink-0">
+            <img src="{{ $booking->event->image ? asset('storage/'.$booking->event->image) : 'https://placehold.co/200' }}" 
+                 class="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition" 
+                 alt="Poster">
+            
+            <div class="absolute top-2 left-2">
+                @if($booking->status == 'approved')
+                    <span class="bg-green-500 text-white text-xs font-bold px-2 py-1 rounded shadow-lg flex items-center">
+                        <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
+                        LUNAS
+                    </span>
+                @elseif($booking->status == 'pending')
+                    <span class="bg-yellow-500 text-white text-xs font-bold px-2 py-1 rounded shadow-lg animate-pulse flex items-center">
+                        <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        MENUNGGU
+                    </span>
+                @else
+                    <span class="bg-red-500 text-white text-xs font-bold px-2 py-1 rounded shadow-lg">BATAL</span>
+                @endif
+            </div>
+        </div>
+
+        <div class="p-6 flex-1 flex flex-col justify-center border-b md:border-b-0 md:border-r border-slate-700 border-dashed relative">
+            
+            <div class="absolute -top-3 -right-3 w-6 h-6 bg-slate-900 rounded-full hidden md:block"></div>
+            <div class="absolute -bottom-3 -right-3 w-6 h-6 bg-slate-900 rounded-full hidden md:block"></div>
+
+            <div class="mb-2">
+                <span class="text-purple-400 text-xs font-bold tracking-wider uppercase bg-purple-900/30 px-2 py-1 rounded">{{ $booking->event->category }}</span>
+            </div>
+            <h3 class="text-xl md:text-2xl font-bold text-white mb-2 line-clamp-1">{{ $booking->event->name }}</h3>
+            
+            <div class="flex flex-col gap-2 text-sm text-slate-300 mt-2">
+                <div class="flex items-center">
+                    <svg class="w-4 h-4 mr-2 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                    {{ \Carbon\Carbon::parse($booking->event->event_date)->format('d F Y') }} • {{ \Carbon\Carbon::parse($booking->event->event_time)->format('H:i') }}
+                </div>
+                <div class="flex items-center">
+                    <svg class="w-4 h-4 mr-2 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                    <span class="line-clamp-1">{{ $booking->event->location }}</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="p-6 md:w-72 flex flex-col justify-center bg-slate-900/50 flex-shrink-0">
+            <div class="text-center w-full">
+                <div class="mb-4 pb-4 border-b border-slate-700 border-dashed">
+                    <p class="text-slate-400 text-xs uppercase mb-1">Tiket</p>
+                    <p class="text-white font-bold text-lg">
+                        {{ $booking->ticket->name }} 
+                        <span class="text-xs text-slate-500 font-normal ml-1">x{{ $booking->quantity }}</span>
+                    </p>
+                </div>
+                
+                <div class="mb-4">
+                    <p class="text-slate-400 text-xs uppercase mb-1">Total Bayar</p>
+                    <p class="text-purple-400 font-bold text-2xl">Rp {{ number_format($booking->total_price, 0, ',', '.') }}</p>
+                </div>
+
+                @if($booking->status == 'approved')
+                    {{-- 1. LUNAS: DOWNLOAD --}}
+                    <button class="w-full bg-slate-700 hover:bg-slate-600 text-white text-xs font-bold py-3 rounded-lg border border-slate-600 transition flex items-center justify-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                        Download E-Ticket
+                    </button>
+
+                @elseif($booking->status == 'pending')
+                    {{-- 2. PENDING: TUNGGU KONFIRMASI --}}
+                    <div class="text-center">
+                        <span class="block bg-yellow-500/10 text-yellow-500 text-xs font-bold py-2 rounded border border-yellow-500/20 mb-2">
+                            ⏳ Menunggu Konfirmasi Organizer
+                        </span>
+                        <button disabled class="w-full bg-slate-800 text-slate-600 cursor-not-allowed text-xs font-bold py-3 rounded-lg border border-slate-700 opacity-50">
+                            Download Terkunci
+                        </button>
+                    </div>
+
+                @else
+                    {{-- 3. BATAL --}}
+                    <span class="text-red-500 font-bold text-sm bg-red-900/20 px-3 py-1 rounded">Dibatalkan</span>
+                @endif
+            </div>
+        </div>
+
+    </div>
+    @empty
+    <div class="text-center py-20 bg-slate-800 rounded-2xl border border-slate-700 flex flex-col items-center">
+        <div class="w-20 h-20 bg-slate-700 rounded-full flex items-center justify-center mb-4 text-4xl">
+            🎫
+        </div>
+        <h3 class="text-xl font-bold text-white mb-2">Belum ada tiket</h3>
+        <p class="text-slate-400 mb-6 max-w-sm">Kamu belum memesan tiket konser apapun. Yuk cari event seru di sekitarmu!</p>
+        <a href="{{ route('home') }}" class="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white px-8 py-3 rounded-full font-bold shadow-lg shadow-purple-500/30 transition transform hover:scale-105">
+            Cari Konser Sekarang
+        </a>
+    </div>
+    @endforelse
 </div>
+
 @endsection
