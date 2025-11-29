@@ -66,4 +66,23 @@ class BookingController extends Controller
 
         return redirect()->back()->with('error', 'Pesanan yang sudah diproses tidak bisa dibatalkan.');
     }
+
+    /**
+     * Tampilkan / Download E-ticket untuk booking yang sudah disetujui
+     */
+    public function ticket($id)
+    {
+        $booking = Booking::with(['ticket', 'event'])->findOrFail($id);
+
+        // Pastikan booking milik user yang sedang login
+        if ($booking->user_id !== Auth::id()) {
+            abort(403, 'Unauthorized');
+        }
+
+        if ($booking->status !== 'approved') {
+            return redirect()->back()->with('error', 'E-ticket belum tersedia (status belum approved).');
+        }
+
+        return view('bookings.ticket', compact('booking'));
+    }
 }

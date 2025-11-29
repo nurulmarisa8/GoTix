@@ -3,8 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Event;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Request;
 
 class HomeController extends Controller
 {
@@ -80,5 +80,27 @@ class HomeController extends Controller
 
         // Redirect back (biasanya ditambah anchor #section-favorit di form view)
         return redirect()->back();
+    }
+
+    /**
+     * Hapus akun pengguna (dipakai ketika organizer ditolak oleh admin)
+     */
+    public function destroy(Request $request)
+    {
+        $user = Auth::user();
+
+        if (!$user) {
+            return redirect()->route('home');
+        }
+
+        // Logout terlebih dahulu
+        Auth::logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        // Hapus user (cascade akan menghapus relasi bila diatur di DB)
+        $user->delete();
+
+        return redirect()->route('home')->with('success', 'Akun berhasil dihapus.');
     }
 }

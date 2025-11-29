@@ -22,7 +22,7 @@ Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/event/{id}', [HomeController::class, 'detail'])->name('event.detail');
 
 // ====================================================
-// 2. AUTH ROUTES (Login, Register, Logout)
+// 2. AUTH ROUTES (Manual Custom Auth)
 // ====================================================
 Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [AuthController::class, 'login']);
@@ -51,7 +51,7 @@ Route::middleware(['auth'])->group(function () {
         // Manage Events (CRUD)
         Route::resource('events', EventController::class)->names('admin.events');
 
-        // Manage Tickets
+        // Manage Tickets (Store Only - via Edit Event)
         Route::post('/events/{event}/tickets', [TicketController::class, 'store'])->name('admin.events.tickets.store');
     });
 
@@ -60,19 +60,22 @@ Route::middleware(['auth'])->group(function () {
     // ROLE: ORGANIZER (Manajemen Acara Sendiri)
     // ----------------------------------------------------
     
+    // Halaman Status (Pending/Rejected) - Diakses di luar middleware role:organizer
     Route::get('/organizer/pending', [OrganizerController::class, 'pendingPage'])->name('organizer.pending');
     Route::get('/organizer/rejected', [OrganizerController::class, 'rejectedPage'])->name('organizer.rejected');
 
+    // Dashboard & Fitur Inti (Hanya jika status Approved)
     Route::middleware(['role:organizer'])->prefix('organizer')->group(function () {
         
+        // Dashboard & Approval Booking
         Route::get('/dashboard', [OrganizerController::class, 'dashboard'])->name('organizer.dashboard');
         Route::post('/bookings/{id}/approve', [OrganizerController::class, 'approveBooking'])->name('organizer.bookings.approve');
         Route::post('/bookings/{id}/reject', [OrganizerController::class, 'rejectBooking'])->name('organizer.bookings.reject');
         
-        // Manage Events
+        // Manage Events (CRUD)
         Route::resource('events', EventController::class)->names('organizer.events');
         
-        // Manage Tickets
+        // Manage Tickets (Create, Store, Edit, Update, Destroy)
         Route::get('/events/{event}/tickets/create', [TicketController::class, 'create'])->name('organizer.events.tickets.create');
         Route::post('/events/{event}/tickets', [TicketController::class, 'store'])->name('organizer.events.tickets.store');
         Route::get('/tickets/{ticket}/edit', [TicketController::class, 'edit'])->name('organizer.tickets.edit');
@@ -88,6 +91,9 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/book-ticket', [BookingController::class, 'store'])->name('booking.store');
         Route::get('/my-bookings', [BookingController::class, 'history'])->name('booking.history');
         Route::put('/bookings/{id}/cancel', [BookingController::class, 'cancel'])->name('booking.cancel');
+        
+        // Download E-Ticket (PDF) - PERBAIKAN DISINI (Sesuai Controller PDF)
+        Route::get('/bookings/{id}/download', [BookingController::class, 'downloadTicket'])->name('booking.download');
     });
 
     // ----------------------------------------------------
@@ -97,8 +103,7 @@ Route::middleware(['auth'])->group(function () {
     // 1. Hapus Akun
     Route::delete('/profile', [HomeController::class, 'destroy'])->name('profile.destroy');
 
-    // 2. FAVORIT (Letakkan di sini agar User biasa bisa akses!)
-    // Sebelumnya ini masuk ke grup admin, makanya error 403
+    // 2. FAVORIT (Aman untuk User)
     Route::post('/event/{id}/favorite', [HomeController::class, 'toggleFavorite'])->name('event.favorite');
 
 });

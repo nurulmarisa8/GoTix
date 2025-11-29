@@ -7,6 +7,7 @@
         <a href="{{ route('admin.events.index') }}" class="text-slate-400 hover:text-white">Batal</a>
     </div>
 
+    {{-- Form mengarah ke update admin --}}
     <form action="{{ route('admin.events.update', $event->id) }}" method="POST" enctype="multipart/form-data" class="space-y-6">
         @csrf
         @method('PUT')
@@ -52,64 +53,46 @@
 
                 <div class="md:col-span-2">
                     <label class="block mb-2 text-sm font-medium text-slate-300">Poster Baru (Opsional)</label>
-                    <input type="file" name="image" class="block w-full text-sm text-slate-400 file:bg-purple-900 file:text-purple-300 border border-slate-600 rounded-lg cursor-pointer bg-slate-900">
-                    @if($event->image)
-                        <div class="mt-2">
-                            <p class="text-xs text-slate-400 mb-1">Poster Saat Ini:</p>
-                            <img src="{{ asset('storage/' . $event->image) }}" class="h-20 rounded border border-slate-700">
-                        </div>
-                    @endif
+                    <input type="file" name="image" class="block w-full text-sm text-slate-400 border border-slate-600 rounded-lg bg-slate-900">
                 </div>
             </div>
         </div>
 
         <div class="bg-slate-800 p-6 rounded-xl border border-slate-700">
-            <div class="flex justify-between items-center mb-4 border-b border-slate-700 pb-2">
-                <h3 class="text-lg font-bold text-white">Edit Tiket</h3>
-                <span class="text-xs text-slate-400">Ubah harga atau kuota di sini</span>
-            </div>
+            <h3 class="text-lg font-bold text-white mb-4">Edit Tiket</h3>
 
             <div class="space-y-4">
                 @foreach($event->tickets as $ticket)
                 <div class="grid grid-cols-1 md:grid-cols-7 gap-4 p-4 bg-slate-900/50 rounded-lg border border-slate-600/50">
-                    
-                    {{-- Nama Tiket --}}
                     <div class="md:col-span-2">
-                        <label class="text-xs text-slate-400 mb-1 block">Nama Tiket</label>
-                        <input type="text" name="tickets[{{ $ticket->id }}][name]" value="{{ $ticket->name }}" class="bg-slate-800 border border-slate-600 text-white text-sm rounded px-2 py-1.5 w-full" required>
+                        <label class="text-xs text-slate-400 mb-1">Nama</label>
+                        <input type="text" name="tickets[{{ $ticket->id }}][name]" value="{{ $ticket->name }}" class="bg-slate-800 border border-slate-600 text-white text-sm rounded w-full p-1.5" required>
                     </div>
-
-                    {{-- Harga --}}
                     <div class="md:col-span-2">
-                        <label class="text-xs text-slate-400 mb-1 block">Harga (Rp)</label>
-                        <input type="number" name="tickets[{{ $ticket->id }}][price]" value="{{ $ticket->price }}" class="bg-slate-800 border border-slate-600 text-white text-sm rounded px-2 py-1.5 w-full" required>
+                        <label class="text-xs text-slate-400 mb-1">Harga</label>
+                        <input type="number" name="tickets[{{ $ticket->id }}][price]" value="{{ $ticket->price }}" class="bg-slate-800 border border-slate-600 text-white text-sm rounded w-full p-1.5" required>
                     </div>
-
-                    {{-- Kuota --}}
                     <div class="md:col-span-1">
-                        <label class="text-xs text-slate-400 mb-1 block">Kuota</label>
-                        <input type="number" name="tickets[{{ $ticket->id }}][quota]" value="{{ $ticket->quota }}" class="bg-slate-800 border border-slate-600 text-white text-sm rounded px-2 py-1.5 w-full" required>
+                        <label class="text-xs text-slate-400 mb-1">Kuota</label>
+                        <input type="number" name="tickets[{{ $ticket->id }}][quota]" value="{{ $ticket->quota }}" class="bg-slate-800 border border-slate-600 text-white text-sm rounded w-full p-1.5" required>
                     </div>
-
-                    {{-- Deskripsi --}}
                     <div class="md:col-span-2">
-                        <label class="text-xs text-slate-400 mb-1 block">Deskripsi</label>
-                        <input type="text" name="tickets[{{ $ticket->id }}][description]" value="{{ $ticket->description }}" class="bg-slate-800 border border-slate-600 text-white text-sm rounded px-2 py-1.5 w-full">
+                        <label class="text-xs text-slate-400 mb-1">Deskripsi</label>
+                        <input type="text" name="tickets[{{ $ticket->id }}][description]" value="{{ $ticket->description }}" class="bg-slate-800 border border-slate-600 text-white text-sm rounded w-full p-1.5">
                     </div>
-
                 </div>
                 @endforeach
 
                 @if($event->tickets->isEmpty())
-                    <p class="text-slate-500 text-center text-sm py-4">Belum ada tiket untuk event ini.</p>
+                    <p class="text-slate-500 text-center text-sm py-4">Belum ada tiket.</p>
                 @endif
             </div>
             
-            {{-- LINK YANG BIKIN ERROR SUDAH DIHAPUS DARI SINI --}}
+            {{-- TOMBOL TAMBAH TIKET SUDAH DIHAPUS DARI SINI AGAR TIDAK ERROR --}}
         </div>
 
-        <button type="submit" class="w-full text-white bg-gradient-to-r from-blue-500 to-indigo-600 hover:bg-gradient-to-l focus:ring-4 focus:outline-none focus:ring-blue-800 font-bold rounded-lg text-sm px-5 py-3 text-center">
-            💾 Simpan Perubahan (Admin)
+        <button type="submit" class="w-full text-white bg-blue-600 hover:bg-blue-700 font-bold rounded-lg text-sm px-5 py-3 text-center">
+            💾 Simpan Perubahan
         </button>
     </form>
 </div>
