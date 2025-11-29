@@ -4,12 +4,13 @@
 <div class="flex justify-between items-center mb-6">
     <h2 class="text-2xl font-bold">Kelola Acara (Events)</h2>
     
-    {{-- PERBAIKAN: Gunakan admin.events.create --}}
-    <a href="{{ route('admin.events.create') }}" class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg text-sm font-bold shadow-lg shadow-purple-500/30">
+    {{-- Tombol Tambah Event Baru --}}
+    <a href="{{ route('admin.events.create') }}" class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg text-sm font-bold shadow-lg shadow-purple-500/30 transition transform hover:scale-105">
         + Tambah Event
     </a>
 </div>
 
+{{-- Tabel List Event --}}
 <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
     <table class="w-full text-sm text-left text-slate-300">
         <thead class="text-xs text-slate-400 uppercase bg-slate-800">
@@ -22,7 +23,7 @@
             </tr>
         </thead>
         <tbody>
-            @foreach($events as $event)
+            @forelse($events as $event)
             <tr class="bg-slate-900 border-b border-slate-700 hover:bg-slate-800 transition">
                 <td class="px-6 py-4">
                     <img src="{{ $event->image ? asset('storage/'.$event->image) : 'https://placehold.co/100' }}" class="w-16 h-16 object-cover rounded-lg border border-slate-600" alt="Poster">
@@ -33,31 +34,34 @@
                 </td>
                 <td class="px-6 py-4">
                     {{ \Carbon\Carbon::parse($event->event_date)->format('d M Y') }}<br>
-                    <span class="text-xs text-slate-500">{{ $event->event_time }}</span>
+                    <span class="text-xs text-slate-500">{{ \Carbon\Carbon::parse($event->event_time)->format('H:i') }}</span>
                 </td>
                 <td class="px-6 py-4">{{ $event->location }}</td>
                 <td class="px-6 py-4 text-center space-y-2">
-                    {{-- PERBAIKAN: admin.events.tickets.create --}}
-                    <a href="{{ route('admin.events.tickets.create', $event->id) }}" class="block w-full bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-xs">
-                        + Tiket
+                    
+                    {{-- 1. TOMBOL EDIT (Sekaligus kelola tiket) --}}
+                    <a href="{{ route('admin.events.edit', $event->id) }}" class="block w-full bg-yellow-600 hover:bg-yellow-700 text-white px-3 py-1 rounded text-xs transition font-medium">
+                        Edit Event & Tiket
                     </a>
 
-                    {{-- PERBAIKAN: admin.events.edit --}}
-                    <a href="{{ route('admin.events.edit', $event->id) }}" class="block w-full bg-yellow-600 hover:bg-yellow-700 text-white px-3 py-1 rounded text-xs">
-                        Edit
-                    </a>
-
-                    {{-- PERBAIKAN: admin.events.destroy --}}
-                    <form action="{{ route('admin.events.destroy', $event->id) }}" method="POST" onsubmit="return confirm('Yakin hapus event ini?');">
+                    {{-- 2. TOMBOL HAPUS --}}
+                    <form action="{{ route('admin.events.destroy', $event->id) }}" method="POST" onsubmit="return confirm('Yakin hapus event ini? Data tiket dan penjualan juga akan terhapus!');">
                         @csrf
                         @method('DELETE')
-                        <button class="block w-full bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded text-xs">
+                        <button class="block w-full bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded text-xs transition font-medium">
                             Hapus
                         </button>
                     </form>
                 </td>
             </tr>
-            @endforeach
+            @empty
+            <tr>
+                <td colspan="5" class="px-6 py-8 text-center text-slate-500">
+                    Belum ada event yang dibuat. <br>
+                    <a href="{{ route('admin.events.create') }}" class="text-purple-400 hover:underline">Buat sekarang yuk!</a>
+                </td>
+            </tr>
+            @endforelse
         </tbody>
     </table>
 </div>

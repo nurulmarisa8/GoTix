@@ -9,12 +9,6 @@ use App\Http\Controllers\EventController;
 use App\Http\Controllers\TicketController;
 use App\Http\Controllers\BookingController;
 
-/*
-|--------------------------------------------------------------------------
-| Web Routes - GoTix Project
-|--------------------------------------------------------------------------
-*/
-
 // ====================================================
 // 1. HALAMAN PUBLIK (Bisa diakses tanpa login)
 // ====================================================
@@ -45,14 +39,13 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/users', [AdminController::class, 'manageUsers'])->name('admin.users');
         Route::post('/approve-organizer/{id}', [AdminController::class, 'approveOrganizer'])->name('admin.approve');
         
-        // Reports
+        // Reports (Laporan Penjualan)
         Route::get('/reports', [AdminController::class, 'reports'])->name('admin.reports');
 
-        // Manage Events (CRUD) - Nama Route: admin.events.index, admin.events.create, dll
+        // Manage Events (CRUD) - Nama Route: admin.events.index, admin.events.edit, dll
         Route::resource('events', EventController::class)->names('admin.events');
 
-        // Manage Tickets (Admin side)
-        Route::get('/events/{event}/tickets/create', [TicketController::class, 'create'])->name('admin.events.tickets.create');
+        // Manage Tickets Admin (Store Only - karena formnya ada di Edit Event)
         Route::post('/events/{event}/tickets', [TicketController::class, 'store'])->name('admin.events.tickets.store');
     });
 
@@ -75,13 +68,17 @@ Route::middleware(['auth'])->group(function () {
         // Manage Events (CRUD) - Nama Route: organizer.events.index, organizer.events.create, dll
         Route::resource('events', EventController::class)->names('organizer.events');
         
-        // Manage Tickets (Create)
+        // --- MANAJEMEN TIKET ---
+        
+        // 1. Tambah Tiket Baru (Butuh ID Event)
         Route::get('/events/{event}/tickets/create', [TicketController::class, 'create'])->name('organizer.events.tickets.create');
         Route::post('/events/{event}/tickets', [TicketController::class, 'store'])->name('organizer.events.tickets.store');
         
-        // Manage Tickets (Edit, Update, Destroy) - INI YANG BARU DITAMBAHKAN
+        // 2. Edit & Update Tiket Spesifik (Butuh ID Ticket) - INI YANG PENTING
         Route::get('/tickets/{ticket}/edit', [TicketController::class, 'edit'])->name('organizer.tickets.edit');
         Route::put('/tickets/{ticket}', [TicketController::class, 'update'])->name('organizer.tickets.update');
+        
+        // 3. Hapus Tiket (Butuh ID Ticket)
         Route::delete('/tickets/{ticket}', [TicketController::class, 'destroy'])->name('organizer.tickets.destroy');
     });
 
