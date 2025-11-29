@@ -7,7 +7,6 @@
         <a href="{{ route('admin.events.index') }}" class="text-slate-400 hover:text-white">Batal</a>
     </div>
 
-    {{-- PERHATIKAN: Route mengarah ke ADMIN --}}
     <form action="{{ route('admin.events.update', $event->id) }}" method="POST" enctype="multipart/form-data" class="space-y-6">
         @csrf
         @method('PUT')
@@ -106,12 +105,7 @@
                 @endif
             </div>
             
-            <div class="mt-4 text-right">
-                {{-- PERHATIKAN: Route mengarah ke ADMIN --}}
-                <a href="{{ route('admin.events.tickets.create', $event->id) }}" class="text-xs text-purple-400 hover:text-white underline">
-                    + Tambah Tiket Baru (Lewat Menu Terpisah)
-                </a>
-            </div>
+            {{-- LINK YANG BIKIN ERROR SUDAH DIHAPUS DARI SINI --}}
         </div>
 
         <button type="submit" class="w-full text-white bg-gradient-to-r from-blue-500 to-indigo-600 hover:bg-gradient-to-l focus:ring-4 focus:outline-none focus:ring-blue-800 font-bold rounded-lg text-sm px-5 py-3 text-center">
