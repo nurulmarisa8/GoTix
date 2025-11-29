@@ -19,4 +19,9 @@ class Event extends Model
     {
         return $this->hasMany(Ticket::class);
     }
+
+    public function favoritedBy()
+    {
+        return $this->belongsToMany(User::class, 'favorites', 'user_id', 'event_id')->withTimestamps();
+    }
 }
