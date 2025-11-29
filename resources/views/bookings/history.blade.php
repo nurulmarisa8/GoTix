@@ -7,7 +7,7 @@
         <h2 class="text-2xl font-bold text-white">Tiket Saya</h2>
         <p class="text-slate-400">Daftar konser yang akan kamu datangi.</p>
     </div>
-    <a href="{{ route('home') }}" class="text-sm text-purple-400 hover:text-purple-300 font-medium">
+    <a href="{{ route('home') }}" class="text-sm text-purple-400 hover:text-purple-300 font-medium transition">
         + Cari Event Lain
     </a>
 </div>
@@ -47,7 +47,7 @@
             
             <div class="flex flex-col gap-2 text-sm text-slate-300 mt-2">
                 
-                {{-- PERBAIKAN DISINI: MENAMBAHKAN JAM --}}
+                {{-- Tanggal & Jam --}}
                 <div class="flex items-center">
                     <svg class="w-4 h-4 mr-2 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
                     <span>
@@ -57,6 +57,7 @@
                     </span>
                 </div>
 
+                {{-- Lokasi --}}
                 <div class="flex items-center">
                     <svg class="w-4 h-4 mr-2 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
                     <span class="line-clamp-1">{{ $booking->event->location }}</span>
@@ -66,6 +67,7 @@
 
         <div class="p-6 md:w-72 flex flex-col justify-center bg-slate-900/50 flex-shrink-0">
             <div class="text-center w-full">
+                
                 <div class="mb-4 pb-4 border-b border-slate-700 border-dashed">
                     <p class="text-slate-400 text-xs uppercase mb-1">Tiket</p>
                     <p class="text-white font-bold text-lg">
@@ -80,14 +82,16 @@
                 </div>
 
                 @if($booking->status == 'approved')
-                    {{-- 1. LUNAS: LINK KE E-TICKET --}}
-                    <a href="{{ route('booking.download', $booking->id) }}" class="w-full inline-flex bg-slate-700 hover:bg-slate-600 text-white text-xs font-bold py-3 rounded-lg border border-slate-600 transition flex items-center justify-center gap-2">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                    
+                    {{-- 1. TOMBOL DOWNLOAD (Link ke PDF) --}}
+                    <a href="{{ route('booking.download', $booking->id) }}" class="w-full inline-flex items-center justify-center bg-slate-700 hover:bg-slate-600 text-white text-xs font-bold py-3 rounded-lg border border-slate-600 transition shadow-lg">
+                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
                         Download E-Ticket
                     </a>
 
                 @elseif($booking->status == 'pending')
-                    {{-- 2. PENDING: TUNGGU KONFIRMASI --}}
+                    
+                    {{-- 2. TOMBOL BATAL (Cancel) --}}
                     <div class="text-center">
                         <span class="block bg-yellow-500/10 text-yellow-500 text-xs font-bold py-2 rounded border border-yellow-500/20 mb-2">
                             ⏳ Menunggu Konfirmasi
@@ -103,8 +107,10 @@
                     </div>
 
                 @else
-                    {{-- 3. BATAL --}}
+                    
+                    {{-- 3. STATUS BATAL --}}
                     <span class="text-red-500 font-bold text-sm bg-red-900/20 px-3 py-1 rounded">Dibatalkan</span>
+                
                 @endif
             </div>
         </div>
