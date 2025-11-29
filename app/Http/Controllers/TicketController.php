@@ -9,31 +9,31 @@ use Illuminate\Support\Facades\Auth;
 
 class TicketController extends Controller
 {
-    // 1. TAMPILKAN FORM & LIST TIKET
+    // --- 1. FORM TAMBAH TIKET (Hanya untuk Organizer) ---
     public function create($eventId)
     {
-        // Load event beserta tiket-tiketnya
         $event = Event::with('tickets')->findOrFail($eventId);
 
-        // Security Check
+        // Security Check: Organizer
         if (Auth::user()->role === 'organizer' && $event->organizer_id !== Auth::id()) {
             abort(403, 'Unauthorized action.');
         }
 
-        // Pisahkan View Admin & Organizer
+        // Jika Admin tidak sengaja masuk sini, lempar ke Edit Event saja
         if (Auth::user()->role === 'admin') {
-            return view('admin.tickets.create', compact('event'));
-        } else {
-            // Ini view yang akan kita update di langkah 3
-            return view('organizer.tickets.create', compact('event')); 
+            return redirect()->route('admin.events.edit', $eventId);
         }
+
+        // Tampilkan View Khusus Organizer
+        return view('organizer.tickets.create', compact('event')); 
     }
 
-    // 2. SIMPAN TIKET BARU
+    // --- 2. PROSES SIMPAN TIKET (STORE) ---
     public function store(Request $request, $eventId)
     {
         $event = Event::findOrFail($eventId);
 
+        // Validasi
         $request->validate([
             'name' => 'required|string|max:255',
             'price' => 'required|numeric|min:0',
@@ -41,6 +41,7 @@ class TicketController extends Controller
             'description' => 'nullable|string'
         ]);
 
+        // Simpan ke Database
         Ticket::create([
             'event_id' => $eventId,
             'name' => $request->name,
@@ -49,17 +50,19 @@ class TicketController extends Controller
             'quota' => $request->quota,
         ]);
 
-        // Redirect Balik agar bisa tambah lagi
+        // --- REDIRECT (PERBAIKAN PENTING DISINI) ---
+        
+        // A. Jika ADMIN: Kembali ke halaman Edit Event (Karena halaman create ticket admin sudah dihapus)
         if (Auth::user()->role === 'admin') {
-            return redirect()->route('admin.events.tickets.create', $eventId)->with('success', 'Tiket berhasil ditambahkan!');
+            return redirect()->route('admin.events.edit', $eventId)->with('success', 'Tiket berhasil ditambahkan!');
         }
 
-        // Tetap di halaman create agar bisa tambah lagi
+        // B. Jika ORGANIZER: Tetap di halaman Create Ticket (agar bisa tambah lagi dengan cepat)
         return redirect()->route('organizer.events.tickets.create', $eventId)->with('success', 'Tiket berhasil ditambahkan!');
     }
 
-    // 3. HAPUS TIKET
-    public function destroy($id)
+    // --- 3. FORM EDIT TIKET SPESIFIK (Organizer) ---
+    public function edit($id)
     {
         $ticket = Ticket::findOrFail($id);
         
@@ -68,25 +71,10 @@ class TicketController extends Controller
             abort(403, 'Unauthorized action.');
         }
 
-        $ticket->delete();
-
-        return redirect()->back()->with('success', 'Tiket berhasil dihapus!');
-    }
-
-    // --- EDIT TIKET (TAMPILKAN FORM) ---
-    public function edit($id)
-    {
-        $ticket = Ticket::findOrFail($id);
-        
-        // Security: Pastikan tiket ini milik event si organizer
-        if (Auth::user()->role === 'organizer' && $ticket->event->organizer_id !== Auth::id()) {
-            abort(403, 'Unauthorized action.');
-        }
-
         return view('organizer.tickets.edit', compact('ticket'));
     }
 
-    // --- UPDATE TIKET (SIMPAN PERUBAHAN) ---
+    // --- 4. PROSES UPDATE TIKET SPESIFIK ---
     public function update(Request $request, $id)
     {
         $ticket = Ticket::findOrFail($id);
@@ -110,8 +98,24 @@ class TicketController extends Controller
             'description' => $request->description,
         ]);
 
-        // Redirect kembali ke halaman "Kelola Tiket" agar alurnya enak
+        // Redirect kembali ke halaman list tiket di "Create Ticket" page
         return redirect()->route('organizer.events.tickets.create', $ticket->event_id)
                          ->with('success', 'Tiket berhasil diperbarui!');
+    }
+
+    // --- 5. HAPUS TIKET ---
+    public function destroy($id)
+    {
+        $ticket = Ticket::findOrFail($id);
+        $event = $ticket->event; // Simpan data event sebelum hapus tiket untuk redirect (jika perlu)
+
+        // Security Check
+        if (Auth::user()->role === 'organizer' && $event->organizer_id !== Auth::id()) {
+            abort(403, 'Unauthorized action.');
+        }
+
+        $ticket->delete();
+
+        return redirect()->back()->with('success', 'Tiket berhasil dihapus!');
     }
 }
