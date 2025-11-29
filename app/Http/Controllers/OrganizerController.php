@@ -9,42 +9,44 @@ use App\Models\Booking;
 
 class OrganizerController extends Controller
 {
-    // Dashboard: Hanya bisa diakses jika status = approved
-public function dashboard()
+    // --- DASHBOARD ORGANIZER ---
+    public function dashboard()
     {
         $organizerId = Auth::id();
         
+        // 1. Statistik Event
         $myEvents = Event::where('organizer_id', $organizerId)->count();
         
-        // Tetap hitung yang approved untuk statistik terjual
+        // 2. Statistik Tiket Terjual (Hanya yang Approved)
         $ticketsSold = Booking::whereHas('event', function($q) use ($organizerId) {
             $q->where('organizer_id', $organizerId);
         })->where('status', 'approved')->count();
 
+        // 3. Statistik Pendapatan
         $totalRevenue = Booking::whereHas('event', function($q) use ($organizerId) {
             $q->where('organizer_id', $organizerId);
         })->where('status', 'approved')->sum('total_price');
 
-        // PERBAIKAN: Ambil semua transaksi (Pending & Approved) agar bisa di-ACC
+        // 4. Transaksi Terbaru (Ambil Pending & Approved & Canceled)
         $recentBookings = Booking::whereHas('event', function($q) use ($organizerId) {
             $q->where('organizer_id', $organizerId);
         })
         ->with(['user', 'ticket', 'event'])
         ->latest()
-        ->take(10) // Tampilkan 10 terakhir
+        ->take(10)
         ->get();
 
         return view('organizer.dashboard', compact('myEvents', 'ticketsSold', 'totalRevenue', 'recentBookings'));
     }
 
-    // --- TAMBAHKAN METHOD BARU INI ---
+    // --- TERIMA PESANAN (APPROVE) ---
     public function approveBooking($id)
     {
         $booking = Booking::findOrFail($id);
 
-        // Security: Pastikan booking ini milik event si organizer
+        // Security Check: Pastikan ini booking milik event organizer yang login
         if($booking->event->organizer_id !== Auth::id()){
-            abort(403, 'Bukan event anda');
+            abort(403, 'Unauthorized action.');
         }
 
         $booking->update(['status' => 'approved']);
@@ -52,13 +54,37 @@ public function dashboard()
         return redirect()->back()->with('success', 'Pesanan berhasil disetujui!');
     }
 
-    // Halaman jika akun masih ditinjau
+    // --- TOLAK PESANAN (REJECT) - INI YANG TADI ERROR ---
+    public function rejectBooking($id)
+    {
+        $booking = Booking::findOrFail($id);
+
+        // Security Check
+        if($booking->event->organizer_id !== Auth::id()){
+            abort(403, 'Unauthorized action.');
+        }
+
+        // Cek jika belum dibatalkan sebelumnya
+        if ($booking->status !== 'canceled') {
+            
+            // 1. Ubah status jadi Canceled
+            $booking->update(['status' => 'canceled']);
+            
+            // 2. KEMBALIKAN KUOTA TIKET (PENTING)
+            $booking->ticket->increment('quota', $booking->quantity);
+
+            return redirect()->back()->with('success', 'Pesanan ditolak dan kuota dikembalikan.');
+        }
+
+        return redirect()->back()->with('error', 'Pesanan sudah dibatalkan sebelumnya.');
+    }
+
+    // --- HALAMAN STATUS AKUN ---
     public function pendingPage()
     {
         return view('organizer.pending');
     }
 
-    // Halaman jika akun ditolak
     public function rejectedPage()
     {
         return view('organizer.rejected');
