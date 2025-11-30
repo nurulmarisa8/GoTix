@@ -4,7 +4,7 @@
 <div class="max-w-4xl mx-auto">
     <div class="flex justify-between items-center mb-6">
         <h2 class="text-2xl font-bold">Buat Event & Tiket</h2>
-        <a href="{{ route('organizer.events.index') }}" class="text-slate-400 hover:text-white">Batal</a>
+        <a href="{{ route('admin.events.index') }}" class="text-slate-400 hover:text-white">Batal</a>
     </div>
 
     {{-- Tambahkan id="eventForm" --}}

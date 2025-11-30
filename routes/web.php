@@ -91,6 +91,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/book-ticket', [BookingController::class, 'store'])->name('booking.store');
         Route::get('/my-bookings', [BookingController::class, 'history'])->name('booking.history');
         Route::put('/bookings/{id}/cancel', [BookingController::class, 'cancel'])->name('booking.cancel');
+        Route::get('/bookings/{id}/download', [BookingController::class, 'downloadTicket'])->name('booking.download');
     });
 
     // ----------------------------------------------------

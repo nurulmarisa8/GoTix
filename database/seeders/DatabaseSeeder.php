@@ -23,7 +23,7 @@ class DatabaseSeeder extends Seeder
                 'email' => 'admin@test.com',
                 'password' => Hash::make('12345678'), // Passwordnya: password
                 'role' => 'admin',
-                'organizer_status' => null, // Admin tidak butuh status organizer
+                'organizer_status' => null,
             ]);
     }
 }

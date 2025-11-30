@@ -3,10 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\Event;
-use App\Models\Ticket; // <--- PENTING: Import Model Ticket
+use App\Models\Ticket;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Carbon\Carbon; // Jangan lupa import Carbon
 
 class EventController extends Controller
 {
@@ -16,13 +17,10 @@ class EventController extends Controller
         $user = Auth::user();
         
         if ($user->role === 'admin') {
-            // Admin melihat semua event
             $events = Event::latest()->get(); 
             return view('admin.events.index', compact('events')); 
         } else {
-            // Organizer hanya melihat event miliknya
             $events = Event::where('organizer_id', $user->id)->latest()->get();
-            // Pastikan mengarah ke view organizer
             return view('organizer.events.index', compact('events')); 
         }
     }
@@ -30,7 +28,6 @@ class EventController extends Controller
     // --- 2. FORM CREATE ---
     public function create()
     {
-        // Pisahkan view agar form action-nya benar (admin vs organizer)
         if (Auth::user()->role === 'admin') {
             return view('admin.events.create');
         } else {
@@ -38,31 +35,42 @@ class EventController extends Controller
         }
     }
 
-    // --- 3. PROSES SIMPAN (EVENT + TIKET OTOMATIS) ---
+    // --- 3. PROSES SIMPAN (STORE) ---
     public function store(Request $request)
     {
-        // 1. Validasi
+        // 1. VALIDASI INPUT
         $request->validate([
-            // Event
-            'name' => 'required|string|max:255',
+            // Event Validation
+            'name' => 'required|string|max:255|unique:events,name', // (A) Nama harus unik
             'description' => 'required',
-            'event_date' => 'required|date',
+            'event_date' => 'required|date|after_or_equal:today',   // (B) Tanggal minimal hari ini
             'event_time' => 'required',
-            'location' => 'required',
+            'location' => 'required|string',
             'category' => 'required',
             'image' => 'required|image|max:2048',
             
-            // Tiket (Perhatikan tanda bintang *)
-            'tickets' => 'required|array|min:1', // Wajib ada minimal 1 tiket
+            // Ticket Validation (Array)
+            'tickets' => 'required|array|min:1',
             'tickets.*.name' => 'required|string',
             'tickets.*.price' => 'required|numeric|min:0',
             'tickets.*.quota' => 'required|integer|min:1',
+        ], [
+            'name.unique' => 'Nama event ini sudah digunakan. Mohon gunakan nama lain.',
+            'event_date.after_or_equal' => 'Tanggal event tidak boleh di masa lalu.',
         ]);
 
-        // 2. Upload Gambar
+        // 2. VALIDASI KHUSUS JAM (Cek jika tanggal hari ini, jam tidak boleh lewat)
+        $eventDateTime = Carbon::parse($request->event_date . ' ' . $request->event_time);
+        if ($eventDateTime->isPast()) {
+            return back()
+                ->withErrors(['event_time' => 'Waktu event sudah terlewat! Pilih jam di masa depan.'])
+                ->withInput();
+        }
+
+        // 3. Upload Gambar
         $imagePath = $request->file('image')->store('event_images', 'public');
 
-        // 3. Simpan Event
+        // 4. Simpan Event
         $event = Event::create([
             'organizer_id' => Auth::id(),
             'name' => $request->name,
@@ -74,7 +82,7 @@ class EventController extends Controller
             'image' => $imagePath,
         ]);
 
-        // 4. LOOPING Simpan Banyak Tiket
+        // 5. Simpan Tiket (Looping Array)
         foreach ($request->tickets as $ticketData) {
             Ticket::create([
                 'event_id' => $event->id,
@@ -85,18 +93,17 @@ class EventController extends Controller
             ]);
         }
 
-        // 5. Redirect
+        // 6. Redirect
         if(Auth::user()->role == 'admin') {
-            return redirect()->route('admin.events.index')->with('success', 'Event dan Tiket berhasil dibuat!');
+            return redirect()->route('admin.events.index')->with('success', 'Event berhasil dibuat!');
         }
         
-        return redirect()->route('organizer.events.index')->with('success', 'Event dan Tiket berhasil dibuat!');
+        return redirect()->route('organizer.events.index')->with('success', 'Event berhasil dibuat!');
     }
-    
+
     // --- 4. FORM EDIT ---
     public function edit(Event $event)
     {
-        // Security Check: Organizer tidak boleh edit punya orang lain
         if (Auth::user()->role !== 'admin' && $event->organizer_id !== Auth::id()) {
             abort(403, 'Unauthorized action.');
         }
@@ -111,28 +118,36 @@ class EventController extends Controller
     // --- 5. PROSES UPDATE ---
     public function update(Request $request, Event $event)
     {
-        // A. Security Check
         if (Auth::user()->role !== 'admin' && $event->organizer_id !== Auth::id()) {
             abort(403, 'Unauthorized action.');
         }
 
-        // B. Validasi
+        // 1. Validasi
         $request->validate([
-            // Validasi Event
-            'name' => 'required',
+            'name' => 'required|unique:events,name,' . $event->id, // Unik kecuali diri sendiri
             'description' => 'required',
             'location' => 'required',
-            
-            // Validasi Array Tiket (Optional, jika ada yang diedit)
+            'event_date' => 'required|date|after_or_equal:today',
+            // Tiket opsional saat update event utama
             'tickets' => 'nullable|array',
-            'tickets.*.name' => 'required|string',
-            'tickets.*.price' => 'required|numeric|min:0',
-            'tickets.*.quota' => 'required|integer|min:0',
+        ], [
+            'name.unique' => 'Nama event sudah dipakai.',
+            'event_date.after_or_equal' => 'Tanggal event tidak boleh di masa lalu.',
         ]);
+
+        // 2. Cek Jam (Jika tanggal/jam diubah)
+        if ($request->has('event_date') && $request->has('event_time')) {
+            $eventDateTime = Carbon::parse($request->event_date . ' ' . $request->event_time);
+            if ($eventDateTime->isPast()) {
+                return back()
+                    ->withErrors(['event_time' => 'Waktu event sudah terlewat!'])
+                    ->withInput();
+            }
+        }
 
         $data = $request->all();
 
-        // C. Update Gambar Event (Jika ada)
+        // 3. Update Gambar
         if ($request->hasFile('image')) {
             if ($event->image) {
                 Storage::disk('public')->delete($event->image);
@@ -140,15 +155,13 @@ class EventController extends Controller
             $data['image'] = $request->file('image')->store('event_images', 'public');
         }
 
-        // D. Update Data Event
+        // 4. Update Event
         $event->update($data);
 
-        // E. Update Data Tiket (LOOPING)
+        // 5. Update Tiket yang sudah ada (Looping)
         if ($request->has('tickets')) {
             foreach ($request->tickets as $ticketId => $ticketData) {
-                // Cari tiket berdasarkan ID dan pastikan milik event ini (Security)
                 $ticket = Ticket::where('id', $ticketId)->where('event_id', $event->id)->first();
-                
                 if ($ticket) {
                     $ticket->update([
                         'name' => $ticketData['name'],
@@ -160,18 +173,16 @@ class EventController extends Controller
             }
         }
 
-        // F. Redirect
         if(Auth::user()->role == 'admin') {
-            return redirect()->route('admin.events.index')->with('success', 'Event dan Tiket berhasil diperbarui!');
+            return redirect()->route('admin.events.index')->with('success', 'Event diperbarui!');
         }
 
-        return redirect()->route('organizer.events.index')->with('success', 'Event dan Tiket berhasil diperbarui!');
+        return redirect()->route('organizer.events.index')->with('success', 'Event diperbarui!');
     }
 
     // --- 6. HAPUS EVENT ---
     public function destroy(Event $event)
     {
-        // Security Check
         if (Auth::user()->role !== 'admin' && $event->organizer_id !== Auth::id()) {
             abort(403, 'Unauthorized action.');
         }
