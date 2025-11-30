@@ -41,7 +41,7 @@ Dibuat untuk memenuhi Tugas Final Project Pemrograman Web (Laravel).
 * **Backend:** Laravel 10 / 11
 * **Frontend:** Blade Templates & Tailwind CSS (CDN)
 * **Database:** MySQL
-* **Fitur Lain:** Laravel Authentication, Middleware, Eloquent Relationships.
+* **Fitur Lain:** Laravel Authentication, Middleware.
 
 ---
 
@@ -53,3 +53,4 @@ Ikuti langkah-langkah berikut untuk menjalankan proyek di komputer Anda:
 ```bash
 git clone https://github.com/nurulmarisa8/GoTix.git
 cd gotix
+```
