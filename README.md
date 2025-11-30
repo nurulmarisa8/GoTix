@@ -51,5 +51,5 @@ Ikuti langkah-langkah berikut untuk menjalankan proyek di komputer Anda:
 
 ### 1. Clone Repository
 ```bash
-git clone [https://github.com/nurulmarisa8/GoTix.git](https://github.com/nurulmarisa8/GoTix.git)
+git clone https://github.com/nurulmarisa8/GoTix.git
 cd gotix
