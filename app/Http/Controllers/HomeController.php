@@ -8,9 +8,9 @@ use Illuminate\Http\Request;
 
 class HomeController extends Controller
 {
-    /**
-     * Menampilkan Halaman Home (Katalog Event)
-     */
+    
+    //Menampilkan Halaman Home (Katalog Event)
+
     public function index(Request $request)
     {
         // 1. Definisikan Logika Filter (Agar bisa dipakai untuk Query Favorit & Query Biasa)
@@ -34,19 +34,19 @@ class HomeController extends Controller
         };
 
         // 2. Ambil Data FAVORIT (Hanya jika user login)
-        $favorites = collect(); // Default koleksi kosong jika belum login
+        $favorites = collect(); 
         
         if (Auth::check()) {
-            $favQuery = Auth::user()->favorites(); // Ambil dari relasi favorites di Model User
-            $applyFilter($favQuery); // Terapkan filter pencarian ke list favorit juga
+            $favQuery = Auth::user()->favorites(); 
+            $applyFilter($favQuery);
             $favorites = $favQuery->orderBy('event_date', 'asc')->get();
         }
 
         // 3. Ambil Data UPCOMING (Event Sisanya)
         $eventQuery = Event::query();
-        $applyFilter($eventQuery); // Terapkan filter yang sama
+        $applyFilter($eventQuery); 
         
-        // PENTING: Cegah Duplikasi
+        // Cegah Duplikasi
         // Jika user login, jangan ambil event yang ID-nya sudah ada di list favorites
         if (Auth::check()) {
             $eventQuery->whereNotIn('id', $favorites->pluck('id'));
@@ -58,9 +58,6 @@ class HomeController extends Controller
         return view('home', compact('events', 'favorites'));
     }
 
-    /**
-     * Menampilkan Halaman Detail Event
-     */
     public function detail($id)
     {
         // Ambil event beserta tiketnya
@@ -68,9 +65,6 @@ class HomeController extends Controller
         return view('event_detail', compact('event'));
     }
 
-    /**
-     * Fitur Like / Unlike Event
-     */
     public function toggleFavorite($id)
     {
         $event = Event::findOrFail($id);
@@ -82,9 +76,6 @@ class HomeController extends Controller
         return redirect()->back();
     }
 
-    /**
-     * Hapus akun pengguna (dipakai ketika organizer ditolak oleh admin)
-     */
     public function destroy(Request $request)
     {
         $user = Auth::user();

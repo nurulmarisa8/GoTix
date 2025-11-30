@@ -6,7 +6,7 @@
     <div class="flex justify-between items-center mb-6">
         <div>
             <h2 class="text-2xl font-bold text-white">Kelola Tiket</h2>
-            {{-- PENTING: Gunakan $event->name, bukan $ticket->name --}}
+            {{-- Gunakan $event->name, bukan $ticket->name --}}
             <p class="text-slate-400 text-sm">Event: <span class="text-purple-400 font-bold">{{ $event->name }}</span></p>
         </div>
         <a href="{{ route('organizer.events.edit', $event->id) }}" class="text-slate-400 hover:text-white bg-slate-800 px-4 py-2 rounded-lg text-sm border border-slate-700">
@@ -23,7 +23,6 @@
                     Tambah Tiket Baru
                 </h3>
                 
-                {{-- Form menggunakan $event->id --}}
                 <form action="{{ route('organizer.events.tickets.store', $event->id) }}" method="POST">
                     @csrf
                     
@@ -62,7 +61,7 @@
             </h3>
             
             <div class="space-y-4">
-                {{-- LOOPING: Di sini baru boleh pakai $ticket --}}
+                {{-- Di sini baru boleh pakai $ticket --}}
                 @forelse($event->tickets as $ticket)
                 <div class="bg-slate-800 p-5 rounded-xl border border-slate-700 hover:border-purple-500 transition group relative shadow-md">
                     

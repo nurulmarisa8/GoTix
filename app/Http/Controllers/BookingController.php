@@ -31,7 +31,7 @@ class BookingController extends Controller
             'event_id' => $ticket->event_id,
             'quantity' => $request->quantity,
             'total_price' => $totalPrice,
-            'status' => 'pending', // <--- Default PENDING (Menunggu ACC)
+            'status' => 'pending',
         ]);
 
         $ticket->decrement('quota', $request->quantity);
@@ -67,9 +67,6 @@ class BookingController extends Controller
         return redirect()->back()->with('error', 'Pesanan yang sudah diproses tidak bisa dibatalkan.');
     }
 
-    /**
-     * Tampilkan / Download E-ticket untuk booking yang sudah disetujui
-     */
     public function ticket($id)
     {
         $booking = Booking::with(['ticket', 'event'])->findOrFail($id);

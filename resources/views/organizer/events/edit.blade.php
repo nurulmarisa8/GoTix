@@ -7,7 +7,7 @@
         <a href="{{ route('organizer.events.index') }}" class="text-slate-400 hover:text-white">Batal</a>
     </div>
 
-    {{-- PENTING: Action mengarah ke organizer.events.update dengan method PUT --}}
+    {{-- Action mengarah ke organizer.events.update dengan method PUT --}}
     <form action="{{ route('organizer.events.update', $event->id) }}" method="POST" enctype="multipart/form-data" class="bg-slate-800 p-6 rounded-xl border border-slate-700">
         @csrf
         @method('PUT')

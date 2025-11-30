@@ -71,7 +71,7 @@
                                 </span>
                             </div>
 
-                            {{-- LOGIKA UTAMA: CEK ROLE USER --}}
+                            {{-- CEK ROLE USER --}}
                             @if($ticket->quota > 0)
                                 @auth
                                     @if(Auth::user()->role === 'user')

@@ -17,14 +17,14 @@ class AdminController extends Controller
             $totalEvents = Event::count();
             $totalRevenue = Booking::where('status', 'approved')->sum('total_price');
 
-            // 2. Data Organizer Pending (Yang butuh persetujuan segera) - NEW
+            // 2. Data Organizer Pending 
             $pendingOrganizers = User::where('role', 'organizer')
                                     ->where('organizer_status', 'pending')
                                     ->latest()
-                                    ->take(5) // Ambil 5 teratas
+                                    ->take(5) 
                                     ->get();
 
-            // 3. Transaksi Terbaru (Global) - NEW
+            // 3. Transaksi Terbaru (Global)
             $recentBookings = Booking::with(['user', 'event'])
                                     ->where('status', 'approved')
                                     ->latest()

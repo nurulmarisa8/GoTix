@@ -107,7 +107,7 @@ class TicketController extends Controller
     public function destroy($id)
     {
         $ticket = Ticket::findOrFail($id);
-        $event = $ticket->event; // Simpan data event sebelum hapus tiket untuk redirect (jika perlu)
+        $event = $ticket->event;
 
         // Security Check
         if (Auth::user()->role === 'organizer' && $event->organizer_id !== Auth::id()) {

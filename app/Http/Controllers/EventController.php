@@ -7,7 +7,7 @@ use App\Models\Ticket;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
-use Carbon\Carbon; // Jangan lupa import Carbon
+use Carbon\Carbon;
 
 class EventController extends Controller
 {
@@ -41,9 +41,9 @@ class EventController extends Controller
         // 1. VALIDASI INPUT
         $request->validate([
             // Event Validation
-            'name' => 'required|string|max:255|unique:events,name', // (A) Nama harus unik
+            'name' => 'required|string|max:255|unique:events,name',
             'description' => 'required',
-            'event_date' => 'required|date|after_or_equal:today',   // (B) Tanggal minimal hari ini
+            'event_date' => 'required|date|after_or_equal:today',
             'event_time' => 'required',
             'location' => 'required|string',
             'category' => 'required',
@@ -124,11 +124,10 @@ class EventController extends Controller
 
         // 1. Validasi
         $request->validate([
-            'name' => 'required|unique:events,name,' . $event->id, // Unik kecuali diri sendiri
+            'name' => 'required|unique:events,name,' . $event->id,
             'description' => 'required',
             'location' => 'required',
             'event_date' => 'required|date|after_or_equal:today',
-            // Tiket opsional saat update event utama
             'tickets' => 'nullable|array',
         ], [
             'name.unique' => 'Nama event sudah dipakai.',
