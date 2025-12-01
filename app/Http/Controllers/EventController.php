@@ -65,6 +65,7 @@ class EventController extends Controller
             return back()
                 ->withErrors(['event_time' => 'Waktu event sudah terlewat! Pilih jam di masa depan.'])
                 ->withInput();
+        
         }
 
         // 3. Upload Gambar
@@ -122,42 +123,29 @@ class EventController extends Controller
             abort(403, 'Unauthorized action.');
         }
 
-        // 1. Validasi
         $request->validate([
-            'name' => 'required|unique:events,name,' . $event->id,
+            'name' => 'required|unique:events,name,' . $event->id, 
             'description' => 'required',
             'location' => 'required',
-            'event_date' => 'required|date|after_or_equal:today',
+            'event_date' => 'required|date',
             'tickets' => 'nullable|array',
-        ], [
-            'name.unique' => 'Nama event sudah dipakai.',
-            'event_date.after_or_equal' => 'Tanggal event tidak boleh di masa lalu.',
         ]);
 
-        // 2. Cek Jam (Jika tanggal/jam diubah)
-        if ($request->has('event_date') && $request->has('event_time')) {
-            $eventDateTime = Carbon::parse($request->event_date . ' ' . $request->event_time);
-            if ($eventDateTime->isPast()) {
-                return back()
-                    ->withErrors(['event_time' => 'Waktu event sudah terlewat!'])
-                    ->withInput();
-            }
-        }
+        $data = $request->except(['tickets', 'image']); 
 
-        $data = $request->all();
-
-        // 3. Update Gambar
+        // Cek jika ada upload gambar baru
         if ($request->hasFile('image')) {
             if ($event->image) {
                 Storage::disk('public')->delete($event->image);
             }
+            // Masukkan image ke array data yang akan diupdate
             $data['image'] = $request->file('image')->store('event_images', 'public');
         }
 
-        // 4. Update Event
+        // Update Event (Sekarang aman karena tidak ada data 'tickets' di dalamnya)
         $event->update($data);
 
-        // 5. Update Tiket yang sudah ada (Looping)
+        // Update Tiket (Looping terpisah)
         if ($request->has('tickets')) {
             foreach ($request->tickets as $ticketId => $ticketData) {
                 $ticket = Ticket::where('id', $ticketId)->where('event_id', $event->id)->first();
@@ -178,20 +166,20 @@ class EventController extends Controller
 
         return redirect()->route('organizer.events.index')->with('success', 'Event diperbarui!');
     }
-
     // --- 6. HAPUS EVENT ---
     public function destroy(Event $event)
-    {
-        if (Auth::user()->role !== 'admin' && $event->organizer_id !== Auth::id()) {
-            abort(403, 'Unauthorized action.');
-        }
+        {
 
-        if ($event->image) {
-            Storage::disk('public')->delete($event->image);
+            if ($event->organizer_id !== Auth::id()) {
+                abort(403, 'Anda tidak memiliki izin menghapus event ini (Bukan milik Anda).');
+            }
+
+            if ($event->image) {
+                Storage::disk('public')->delete($event->image);
+            }
+            
+            $event->delete();
+            
+            return redirect()->back()->with('success', 'Event berhasil dihapus!');
         }
-        
-        $event->delete();
-        
-        return redirect()->back()->with('success', 'Event dihapus!');
-    }
 }

@@ -48,8 +48,18 @@ Route::middleware(['auth'])->group(function () {
         // Reports
         Route::get('/reports', [AdminController::class, 'reports'])->name('admin.reports');
 
+        // Manage User
+        Route::get('/users/{id}/edit', [AdminController::class, 'editUser'])->name('admin.users.edit');
+        Route::put('/users/{id}', [AdminController::class, 'updateUser'])->name('admin.users.update');
+        Route::delete('/users/{id}', [AdminController::class, 'destroyUser'])->name('admin.users.destroy');
+
         // Manage Events (CRUD)
         Route::resource('events', EventController::class)->names('admin.events');
+
+        // --- KELOLA TRANSAKSI (BOOKINGS) ---
+        Route::get('/bookings', [AdminController::class, 'manageBookings'])->name('admin.bookings');
+        Route::post('/bookings/{id}/approve', [AdminController::class, 'approveBooking'])->name('admin.bookings.approve');
+        Route::post('/bookings/{id}/reject', [AdminController::class, 'rejectBooking'])->name('admin.bookings.reject');
 
         // Manage Tickets (Store Only - via Edit Event)
         Route::post('/events/{event}/tickets', [TicketController::class, 'store'])->name('admin.events.tickets.store');

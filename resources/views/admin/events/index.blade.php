@@ -16,7 +16,7 @@
         <thead class="text-xs text-slate-400 uppercase bg-slate-800">
             <tr>
                 <th class="px-6 py-3">Poster</th>
-                <th class="px-6 py-3">Nama Acara</th>
+                <th class="px-6 py-3">Nama Acara & Organizer</th>
                 <th class="px-6 py-3">Jadwal</th>
                 <th class="px-6 py-3">Lokasi</th>
                 <th class="px-6 py-3 text-center">Aksi</th>
@@ -28,15 +28,34 @@
                 <td class="px-6 py-4">
                     <img src="{{ $event->image ? asset('storage/'.$event->image) : 'https://placehold.co/100' }}" class="w-16 h-16 object-cover rounded-lg border border-slate-600" alt="Poster">
                 </td>
-                <td class="px-6 py-4 font-bold text-white">
-                    {{ $event->name }}
-                    <span class="block text-xs text-purple-400 font-normal mt-1">{{ $event->category }}</span>
+                
+                {{-- KOLOM NAMA ACARA --}}
+                <td class="px-6 py-4">
+                    <div class="flex items-center gap-2">
+                        <span class="font-bold text-white text-base">{{ $event->name }}</span>
+                        
+                        {{-- [BARU] TAG KHUSUS ADMIN --}}
+                        @if($event->organizer->role === 'admin')
+                            <span class="bg-blue-600 text-white text-[10px] px-2 py-0.5 rounded border border-blue-400 font-bold uppercase tracking-wider shadow-sm">
+                                ADMIN
+                            </span>
+                        @endif
+                    </div>
+
+                    <span class="block text-xs text-purple-400 font-normal mt-1 mb-1">{{ $event->category }}</span>
+                    
+                    {{-- Tampilkan Nama Pembuatnya --}}
+                    <span class="text-xs text-slate-500 flex items-center gap-1">
+                        Oleh: <span class="{{ $event->organizer->role === 'admin' ? 'text-blue-400 font-bold' : 'text-slate-300' }}">{{ $event->organizer->name }}</span>
+                    </span>
                 </td>
+
                 <td class="px-6 py-4">
                     {{ \Carbon\Carbon::parse($event->event_date)->format('d M Y') }}<br>
                     <span class="text-xs text-slate-500">{{ \Carbon\Carbon::parse($event->event_time)->format('H:i') }}</span>
                 </td>
                 <td class="px-6 py-4">{{ $event->location }}</td>
+                
                 <td class="px-6 py-4 text-center space-y-2">
                     
                     {{-- 1. TOMBOL EDIT (Sekaligus kelola tiket) --}}

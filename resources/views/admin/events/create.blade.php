@@ -8,7 +8,7 @@
     </div>
 
     {{-- Tambahkan id="eventForm" --}}
-    <form id="eventForm" action="{{ route('organizer.events.store') }}" method="POST" enctype="multipart/form-data" class="space-y-6">
+    <form id="eventForm" action="{{ route('admin.events.store') }}" method="POST" enctype="multipart/form-data" class="space-y-6">
         @csrf
         
         <div class="bg-slate-800 p-6 rounded-xl border border-slate-700">

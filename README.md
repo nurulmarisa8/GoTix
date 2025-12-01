@@ -29,7 +29,7 @@ Dibuat untuk memenuhi Tugas Final Project Pemrograman Web (Laravel).
 * **Manajemen Tiket:** Menambah varian tiket (VIP, Regular) dengan harga dan kuota berbeda.
 * **Approval Pesanan:** Menerima atau Menolak pesanan tiket yang masuk dari User.
 
-### 4. Role: Administrator (Admin)
+### 4. Role: Administrator (Super Admin)
 * **Full Control:** Mengelola seluruh user dan event.
 * **Approval Organizer:** Menyetujui atau menolak pendaftaran akun Organizer baru.
 * **Laporan Penjualan:** Melihat rekapitulasi seluruh transaksi yang masuk ke sistem.
