@@ -1,7 +1,6 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\AuthController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\OrganizerController;
@@ -20,15 +19,6 @@ use App\Http\Controllers\BookingController;
 // ====================================================
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/event/{id}', [HomeController::class, 'detail'])->name('event.detail');
-
-// ====================================================
-// 2. AUTH ROUTES (Manual Custom Auth)
-// ====================================================
-Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
-Route::post('/login', [AuthController::class, 'login']);
-Route::get('/register', [AuthController::class, 'showRegistrationForm'])->name('register');
-Route::post('/register', [AuthController::class, 'register']);
-Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 
 // ====================================================
@@ -115,3 +105,6 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/event/{id}/favorite', [HomeController::class, 'toggleFavorite'])->name('event.favorite');
 
 });
+
+// Auth routes should be accessible to unauthenticated users
+require __DIR__.'/auth.php';

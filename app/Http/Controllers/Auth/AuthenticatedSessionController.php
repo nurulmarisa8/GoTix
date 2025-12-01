@@ -23,34 +23,35 @@ class AuthenticatedSessionController extends Controller
      * Handle an incoming authentication request.
      */
     public function store(LoginRequest $request): RedirectResponse
-    {
-        $request->authenticate();
+        {
+            $request->authenticate();
 
-        $request->session()->regenerate();
+            $request->session()->regenerate();
 
-        // --- CUSTOM LOGIC GOTIX ---
-        $user = Auth::user();
+            // --- LOGIKA CUSTOM GOTIX ---
+            $user = Auth::user();
 
-        // 1. Cek Organizer
-        if ($user->role === 'organizer') {
-            if ($user->organizer_status === 'rejected') {
-                return redirect()->route('organizer.rejected');
+            // 1. Cek Organizer
+            if ($user->role === 'organizer') {
+                if ($user->organizer_status === 'rejected') {
+                    Auth::guard('web')->logout(); // Logout paksa jika ditolak
+                    return redirect()->route('organizer.rejected');
+                }
+                if ($user->organizer_status === 'pending') {
+                    // Jangan logout, tapi arahkan ke pending page
+                    return redirect()->route('organizer.pending');
+                }
+                return redirect()->intended(route('organizer.dashboard'));
             }
-            if ($user->organizer_status === 'pending') {
-                return redirect()->route('organizer.pending');
-            }
-            return redirect()->intended(route('organizer.dashboard'));
+            
+            // 2. Cek Admin
+            if ($user->role === 'admin') {
+                return redirect()->intended(route('admin.dashboard'));
+            } 
+            
+            // 3. User Biasa
+            return redirect()->intended(route('home'));
         }
-        
-        // 2. Cek Admin
-        if ($user->role === 'admin') {
-            return redirect()->intended(route('admin.dashboard'));
-        } 
-        
-        // 3. User Biasa
-        return redirect()->intended(route('home'));
-    }
-
     /**
      * Destroy an authenticated session.
      */

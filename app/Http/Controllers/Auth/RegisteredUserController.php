@@ -22,21 +22,16 @@ class RegisteredUserController extends Controller
         return view('auth.register');
     }
 
-    /**
-     * Handle an incoming registration request.
-     *
-     * @throws \Illuminate\Validation\ValidationException
-     */
-    public function store(Request $request): RedirectResponse
+   public function store(Request $request): RedirectResponse
     {
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
-            'role' => ['required', 'in:organizer,user'], // <--- Validasi Role
+            'role' => ['required', 'in:organizer,user'], // <--- Tambahan Kita
         ]);
 
-        // Tentukan Status
+        // Logika Status Organizer (Custom Kita)
         $organizerStatus = null;
         if ($request->role === 'organizer') {
             $organizerStatus = 'pending';
@@ -46,15 +41,15 @@ class RegisteredUserController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'role' => $request->role,                 // <--- Simpan Role
-            'organizer_status' => $organizerStatus,   // <--- Simpan Status
+            'role' => $request->role,               // <--- Simpan Role
+            'organizer_status' => $organizerStatus, // <--- Simpan Status
         ]);
 
         event(new Registered($user));
 
         Auth::login($user);
 
-        // Redirect Khusus Organizer Baru
+        // Redirect Custom Sesuai Role
         if ($user->role === 'organizer') {
             return redirect()->route('organizer.pending');
         }

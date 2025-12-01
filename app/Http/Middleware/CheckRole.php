@@ -4,38 +4,28 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Support\Facades\Auth;
+use Symfony\Component\HttpFoundation\Response;
 
 class CheckRole
 {
+    /**
+     * Handle an incoming request.
+     *
+     * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
+     */
     public function handle(Request $request, Closure $next, ...$roles): Response
     {
         if (!Auth::check()) {
-            return redirect('login');
+            return redirect()->route('login');
         }
 
         $user = Auth::user();
-
-        // --- LOGIKA DIPERKETAT ---
-        if ($user->role === 'organizer') {
-            
-            // 1. Jika Ditolak -> Halaman Rejected
-            if ($user->organizer_status === 'rejected') {
-                return redirect()->route('organizer.rejected');
-            }
-
-            // 2. Jika BUKAN Approved (Berarti Pending, Null, atau Error) -> Halaman Pending
-            if ($user->organizer_status !== 'approved') {
-                return redirect()->route('organizer.pending');
-            }
-        }
-        // -------------------------
-
-        if (in_array($user->role, $roles)) {
-            return $next($request);
+        
+        if (!in_array($user->role, $roles)) {
+            abort(403, 'Access denied. You do not have the required role.');
         }
 
-        return abort(403, 'Unauthorized');
+        return $next($request);
     }
 }
